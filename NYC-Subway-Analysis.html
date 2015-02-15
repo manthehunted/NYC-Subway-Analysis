@@ -1820,7 +1820,7 @@ Populating the interactive namespace from numpy and matplotlib
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class="highlight"><pre><span class="c">#import datasets</span>
@@ -1840,6 +1840,25 @@ Populating the interactive namespace from numpy and matplotlib
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>
+-c:13: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame
+
+See the the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-view-versus-copy
+
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -2972,7 +2991,7 @@ chERERGRhP0vcAU6tPx8zF4AAAAASUVORK5CYII=
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[169]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class="highlight"><pre><span class="c">#borrowed from Udacity</span>
@@ -3002,7 +3021,7 @@ chERERGRhP0vcAU6tPx8zF4AAAAASUVORK5CYII=
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>(problem 2.1) To model a linear regression, I used OLS (Ordinary Least Squared) function from <em>statsmodels</em> package. Briefly, what OLS achieves is that it tries to fit a linear function to a given outcome based on selected features by minimizing the squared difference between the predicted outcome and the actual outcome.</p>
+<p>(problem 2.1) To model a linear regression, I used OLS (Ordinary Least Squared) function from <em>statsmodels</em> package. Briefly, what OLS achieves is that it tries to fit a polynomial function to a given outcome based on selected features by minimizing the squared difference between the predicted outcome and the actual outcome. In this analysis, I am going to stick with a linear model (no feature whose power is raised more than one is used).</p>
 <p>So what kinds of feature will be useful to infer <em>ENTRIESn_hourly</em>? As a initial starting point, I selected 1) <em>hour</em>, 2) <em>weekday</em>, 3) <em>rain</em>, 4) <em>meantempi,</em> and 5) <em>UNIT.</em> Note that <em>UNIT</em> is a categorical variable, thus, I introduce it in OLS model as a dummy variable.</p>
 <p>Intuitively, my selections make sense.</p>
 <pre><code>hour: Because I know there is rush-hour, hour must be informative about the ridership.
@@ -3030,7 +3049,7 @@ UNIT: without this, any OLS result is disastrous. So I think UNIT serves as a ba
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[108]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class="highlight"><pre><span class="n">d</span> <span class="o">=</span> <span class="n">data</span>
@@ -3044,12 +3063,13 @@ UNIT: without this, any OLS result is disastrous. So I think UNIT serves as a ba
 <span class="n">features</span> <span class="o">=</span> <span class="n">features</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dummy_units1</span><span class="p">)</span>
 <span class="n">features</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="n">normalize_features</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
 <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="n">features</span><span class="p">[</span><span class="s">&#39;ones&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="c"># Add a column of constant (y intercept)</span>
+<span class="n">features</span><span class="p">[</span><span class="s">&#39;intercept&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="c"># Add a column of constant (y intercept)</span>
 
 <span class="c">#model fit</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">features</span><span class="p">,)</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
-<span class="n">results</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="n">xname</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;hour&#39;</span><span class="p">,</span><span class="s">&#39;weekday&#39;</span><span class="p">,</span><span class="s">&#39;rain&#39;</span><span class="p">,</span><span class="s">&#39;meantempi&#39;</span><span class="p">,</span><span class="s">&#39;intercept&#39;</span><span class="p">]</span>
+<span class="n">results</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">xname</span><span class="o">=</span><span class="n">xname</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -3060,7 +3080,7 @@ UNIT: without this, any OLS result is disastrous. So I think UNIT serves as a ba
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[108]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[5]:</div>
 
 <div class="output_html rendered_html output_subarea output_pyout">
 <table class="simpletable">
@@ -3078,7 +3098,7 @@ UNIT: without this, any OLS result is disastrous. So I think UNIT serves as a ba
   <th>Date:</th>             <td>Sat, 14 Feb 2015</td> <th>  Prob (F-statistic):</th>   <td>  0.00</td>   
 </tr>
 <tr>
-  <th>Time:</th>                 <td>15:11:17</td>     <th>  Log-Likelihood:    </th> <td>-3.8726e+05</td>
+  <th>Time:</th>                 <td>22:28:26</td>     <th>  Log-Likelihood:    </th> <td>-3.8726e+05</td>
 </tr>
 <tr>
   <th>No. Observations:</th>      <td> 42649</td>      <th>  AIC:               </th>  <td>7.750e+05</td> 
@@ -3110,727 +3130,7 @@ UNIT: without this, any OLS result is disastrous. So I think UNIT serves as a ba
   <th>meantempi</th> <td>  -96.4489</td> <td>   10.943</td> <td>   -8.814</td> <td> 0.000</td> <td> -117.897   -75.000</td>
 </tr>
 <tr>
-  <th>unit_R003</th> <td> 1.289e+14</td> <td> 1.68e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.01e+14  4.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R004</th> <td> 1.315e+14</td> <td> 1.72e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.05e+14  4.68e+14</td>
-</tr>
-<tr>
-  <th>unit_R005</th> <td> 1.304e+14</td> <td>  1.7e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.04e+14  4.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R006</th> <td> 1.334e+14</td> <td> 1.74e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.08e+14  4.75e+14</td>
-</tr>
-<tr>
-  <th>unit_R007</th> <td> 1.296e+14</td> <td> 1.69e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.02e+14  4.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R008</th> <td> 1.293e+14</td> <td> 1.69e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.02e+14   4.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R009</th> <td> 1.315e+14</td> <td> 1.72e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.05e+14  4.68e+14</td>
-</tr>
-<tr>
-  <th>unit_R011</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R012</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R013</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R016</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R017</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R018</th> <td> 1.352e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.11e+14  4.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R019</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R020</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R021</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R022</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R023</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R024</th> <td> 1.352e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.11e+14  4.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R025</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R027</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R029</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R030</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R031</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R032</th> <td> 1.352e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.11e+14  4.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R033</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R034</th> <td> 1.296e+14</td> <td> 1.69e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.02e+14  4.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R035</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R036</th> <td> 1.323e+14</td> <td> 1.73e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.06e+14  4.71e+14</td>
-</tr>
-<tr>
-  <th>unit_R037</th> <td> 1.345e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14  4.79e+14</td>
-</tr>
-<tr>
-  <th>unit_R038</th> <td> 1.315e+14</td> <td> 1.72e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.05e+14  4.68e+14</td>
-</tr>
-<tr>
-  <th>unit_R039</th> <td> 1.281e+14</td> <td> 1.67e+14</td> <td>    0.765</td> <td> 0.444</td> <td>   -2e+14  4.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R040</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R041</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R042</th> <td> 1.334e+14</td> <td> 1.74e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.08e+14  4.75e+14</td>
-</tr>
-<tr>
-  <th>unit_R043</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R044</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R046</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R049</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R050</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R051</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R052</th> <td> 1.304e+14</td> <td>  1.7e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.04e+14  4.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R053</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R054</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R055</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R056</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R057</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R058</th> <td> 1.352e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.11e+14  4.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R059</th> <td> 1.323e+14</td> <td> 1.73e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.06e+14  4.71e+14</td>
-</tr>
-<tr>
-  <th>unit_R060</th> <td> 1.334e+14</td> <td> 1.74e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.08e+14  4.75e+14</td>
-</tr>
-<tr>
-  <th>unit_R061</th> <td> 1.285e+14</td> <td> 1.68e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.01e+14  4.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R062</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R063</th> <td> 1.289e+14</td> <td> 1.68e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.01e+14  4.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R064</th> <td> 1.319e+14</td> <td> 1.72e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.06e+14   4.7e+14</td>
-</tr>
-<tr>
-  <th>unit_R065</th> <td> 1.304e+14</td> <td>  1.7e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.04e+14  4.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R066</th> <td> 1.296e+14</td> <td> 1.69e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.02e+14  4.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R067</th> <td> 1.285e+14</td> <td> 1.68e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.01e+14  4.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R068</th> <td> 1.285e+14</td> <td> 1.68e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.01e+14  4.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R069</th> <td> 1.308e+14</td> <td> 1.71e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.04e+14  4.66e+14</td>
-</tr>
-<tr>
-  <th>unit_R070</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R080</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R081</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R082</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R083</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R084</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R085</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R086</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R087</th> <td> 1.341e+14</td> <td> 1.75e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.09e+14  4.78e+14</td>
-</tr>
-<tr>
-  <th>unit_R089</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R090</th> <td> 1.285e+14</td> <td> 1.68e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.01e+14  4.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R091</th> <td> 1.296e+14</td> <td> 1.69e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.02e+14  4.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R092</th> <td> 1.319e+14</td> <td> 1.72e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.06e+14   4.7e+14</td>
-</tr>
-<tr>
-  <th>unit_R093</th> <td> 1.311e+14</td> <td> 1.71e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.05e+14  4.67e+14</td>
-</tr>
-<tr>
-  <th>unit_R094</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R095</th> <td> 1.337e+14</td> <td> 1.75e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.09e+14  4.76e+14</td>
-</tr>
-<tr>
-  <th>unit_R096</th> <td> 1.352e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.11e+14  4.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R097</th> <td> 1.352e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.11e+14  4.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R098</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R099</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R100</th> <td> 1.341e+14</td> <td> 1.75e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.09e+14  4.78e+14</td>
-</tr>
-<tr>
-  <th>unit_R101</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R102</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R103</th> <td> 1.304e+14</td> <td>  1.7e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.04e+14  4.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R104</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R105</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R106</th> <td> 1.285e+14</td> <td> 1.68e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.01e+14  4.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R107</th> <td> 1.281e+14</td> <td> 1.67e+14</td> <td>    0.765</td> <td> 0.444</td> <td>   -2e+14  4.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R108</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R111</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R112</th> <td> 1.352e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.11e+14  4.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R114</th> <td> 1.352e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.11e+14  4.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R115</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R116</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R117</th> <td> 1.289e+14</td> <td> 1.68e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.01e+14  4.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R119</th> <td>  1.33e+14</td> <td> 1.74e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.08e+14  4.74e+14</td>
-</tr>
-<tr>
-  <th>unit_R120</th> <td> 1.311e+14</td> <td> 1.71e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.05e+14  4.67e+14</td>
-</tr>
-<tr>
-  <th>unit_R121</th> <td> 1.319e+14</td> <td> 1.72e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.06e+14   4.7e+14</td>
-</tr>
-<tr>
-  <th>unit_R122</th> <td> 1.337e+14</td> <td> 1.75e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.09e+14  4.76e+14</td>
-</tr>
-<tr>
-  <th>unit_R123</th> <td> 1.334e+14</td> <td> 1.74e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.08e+14  4.75e+14</td>
-</tr>
-<tr>
-  <th>unit_R124</th> <td>   1.3e+14</td> <td>  1.7e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.03e+14  4.63e+14</td>
-</tr>
-<tr>
-  <th>unit_R126</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R127</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R137</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R139</th> <td> 1.352e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.11e+14  4.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R163</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R172</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R179</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R181</th> <td>  1.33e+14</td> <td> 1.74e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.08e+14  4.74e+14</td>
-</tr>
-<tr>
-  <th>unit_R183</th> <td> 1.281e+14</td> <td> 1.67e+14</td> <td>    0.765</td> <td> 0.444</td> <td>   -2e+14  4.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R184</th> <td> 1.296e+14</td> <td> 1.69e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.02e+14  4.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R186</th> <td> 1.337e+14</td> <td> 1.75e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.09e+14  4.76e+14</td>
-</tr>
-<tr>
-  <th>unit_R188</th> <td> 1.352e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.11e+14  4.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R189</th> <td> 1.323e+14</td> <td> 1.73e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.06e+14  4.71e+14</td>
-</tr>
-<tr>
-  <th>unit_R194</th> <td>  1.33e+14</td> <td> 1.74e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.08e+14  4.74e+14</td>
-</tr>
-<tr>
-  <th>unit_R196</th> <td> 1.345e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14  4.79e+14</td>
-</tr>
-<tr>
-  <th>unit_R198</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R199</th> <td>  1.33e+14</td> <td> 1.74e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.08e+14  4.74e+14</td>
-</tr>
-<tr>
-  <th>unit_R200</th> <td> 1.341e+14</td> <td> 1.75e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.09e+14  4.78e+14</td>
-</tr>
-<tr>
-  <th>unit_R202</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R203</th> <td> 1.315e+14</td> <td> 1.72e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.05e+14  4.68e+14</td>
-</tr>
-<tr>
-  <th>unit_R204</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R205</th> <td> 1.341e+14</td> <td> 1.75e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.09e+14  4.78e+14</td>
-</tr>
-<tr>
-  <th>unit_R207</th> <td> 1.352e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.11e+14  4.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R208</th> <td> 1.341e+14</td> <td> 1.75e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.09e+14  4.78e+14</td>
-</tr>
-<tr>
-  <th>unit_R209</th> <td> 1.289e+14</td> <td> 1.68e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.01e+14  4.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R210</th> <td> 1.323e+14</td> <td> 1.73e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.06e+14  4.71e+14</td>
-</tr>
-<tr>
-  <th>unit_R211</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R212</th> <td> 1.352e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.11e+14  4.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R213</th> <td> 1.326e+14</td> <td> 1.73e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.07e+14  4.72e+14</td>
-</tr>
-<tr>
-  <th>unit_R214</th> <td> 1.285e+14</td> <td> 1.68e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.01e+14  4.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R215</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R216</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R217</th> <td> 1.289e+14</td> <td> 1.68e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.01e+14  4.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R218</th> <td> 1.352e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.11e+14  4.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R219</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R220</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R221</th> <td> 1.285e+14</td> <td> 1.68e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.01e+14  4.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R223</th> <td> 1.352e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.11e+14  4.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R224</th> <td> 1.319e+14</td> <td> 1.72e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.06e+14   4.7e+14</td>
-</tr>
-<tr>
-  <th>unit_R225</th> <td> 1.337e+14</td> <td> 1.75e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.09e+14  4.76e+14</td>
-</tr>
-<tr>
-  <th>unit_R226</th> <td> 1.296e+14</td> <td> 1.69e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.02e+14  4.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R227</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R228</th> <td> 1.293e+14</td> <td> 1.69e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.02e+14   4.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R229</th> <td>   1.3e+14</td> <td>  1.7e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.03e+14  4.63e+14</td>
-</tr>
-<tr>
-  <th>unit_R230</th> <td> 1.315e+14</td> <td> 1.72e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.05e+14  4.68e+14</td>
-</tr>
-<tr>
-  <th>unit_R231</th> <td> 1.337e+14</td> <td> 1.75e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.09e+14  4.76e+14</td>
-</tr>
-<tr>
-  <th>unit_R232</th> <td> 1.304e+14</td> <td>  1.7e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.04e+14  4.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R233</th> <td> 1.277e+14</td> <td> 1.67e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-1.99e+14  4.55e+14</td>
-</tr>
-<tr>
-  <th>unit_R234</th> <td> 1.289e+14</td> <td> 1.68e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.01e+14  4.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R235</th> <td> 1.352e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.11e+14  4.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R236</th> <td> 1.341e+14</td> <td> 1.75e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.09e+14  4.78e+14</td>
-</tr>
-<tr>
-  <th>unit_R237</th> <td> 1.293e+14</td> <td> 1.69e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.02e+14   4.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R238</th> <td> 1.352e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.11e+14  4.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R239</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R240</th> <td> 1.345e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14  4.79e+14</td>
-</tr>
-<tr>
-  <th>unit_R242</th> <td> 1.326e+14</td> <td> 1.73e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.07e+14  4.72e+14</td>
-</tr>
-<tr>
-  <th>unit_R243</th> <td> 1.308e+14</td> <td> 1.71e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.04e+14  4.66e+14</td>
-</tr>
-<tr>
-  <th>unit_R244</th> <td> 1.308e+14</td> <td> 1.71e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.04e+14  4.66e+14</td>
-</tr>
-<tr>
-  <th>unit_R246</th> <td> 1.293e+14</td> <td> 1.69e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.02e+14   4.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R247</th> <td> 1.269e+14</td> <td> 1.66e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-1.98e+14  4.52e+14</td>
-</tr>
-<tr>
-  <th>unit_R248</th> <td> 1.352e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.11e+14  4.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R249</th> <td> 1.334e+14</td> <td> 1.74e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.08e+14  4.75e+14</td>
-</tr>
-<tr>
-  <th>unit_R250</th> <td> 1.326e+14</td> <td> 1.73e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.07e+14  4.72e+14</td>
-</tr>
-<tr>
-  <th>unit_R251</th> <td> 1.345e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14  4.79e+14</td>
-</tr>
-<tr>
-  <th>unit_R252</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R253</th> <td> 1.304e+14</td> <td>  1.7e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.04e+14  4.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R254</th> <td> 1.352e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.11e+14  4.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R255</th> <td> 1.341e+14</td> <td> 1.75e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.09e+14  4.78e+14</td>
-</tr>
-<tr>
-  <th>unit_R256</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R257</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R258</th> <td> 1.345e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14  4.79e+14</td>
-</tr>
-<tr>
-  <th>unit_R259</th> <td> 1.334e+14</td> <td> 1.74e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.08e+14  4.75e+14</td>
-</tr>
-<tr>
-  <th>unit_R260</th> <td> 1.242e+14</td> <td> 1.62e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-1.94e+14  4.42e+14</td>
-</tr>
-<tr>
-  <th>unit_R261</th> <td> 1.323e+14</td> <td> 1.73e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.06e+14  4.71e+14</td>
-</tr>
-<tr>
-  <th>unit_R262</th> <td> 1.269e+14</td> <td> 1.66e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-1.98e+14  4.52e+14</td>
-</tr>
-<tr>
-  <th>unit_R263</th> <td> 1.326e+14</td> <td> 1.73e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.07e+14  4.72e+14</td>
-</tr>
-<tr>
-  <th>unit_R264</th> <td> 1.352e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.11e+14  4.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R265</th> <td>   1.3e+14</td> <td>  1.7e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.03e+14  4.63e+14</td>
-</tr>
-<tr>
-  <th>unit_R266</th> <td> 1.352e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.11e+14  4.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R269</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R270</th> <td> 1.293e+14</td> <td> 1.69e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.02e+14   4.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R271</th> <td> 1.296e+14</td> <td> 1.69e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.02e+14  4.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R273</th> <td> 1.289e+14</td> <td> 1.68e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.01e+14  4.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R274</th> <td> 1.304e+14</td> <td>  1.7e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.04e+14  4.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R275</th> <td> 1.323e+14</td> <td> 1.73e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.06e+14  4.71e+14</td>
-</tr>
-<tr>
-  <th>unit_R276</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R277</th> <td> 1.258e+14</td> <td> 1.64e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-1.96e+14  4.48e+14</td>
-</tr>
-<tr>
-  <th>unit_R278</th> <td>   1.3e+14</td> <td>  1.7e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.03e+14  4.63e+14</td>
-</tr>
-<tr>
-  <th>unit_R279</th> <td>  1.33e+14</td> <td> 1.74e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.08e+14  4.74e+14</td>
-</tr>
-<tr>
-  <th>unit_R280</th> <td> 1.266e+14</td> <td> 1.65e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-1.98e+14  4.51e+14</td>
-</tr>
-<tr>
-  <th>unit_R281</th> <td> 1.334e+14</td> <td> 1.74e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.08e+14  4.75e+14</td>
-</tr>
-<tr>
-  <th>unit_R282</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R284</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R285</th> <td> 1.285e+14</td> <td> 1.68e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.01e+14  4.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R287</th> <td> 1.281e+14</td> <td> 1.67e+14</td> <td>    0.765</td> <td> 0.444</td> <td>   -2e+14  4.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R291</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R294</th> <td> 1.323e+14</td> <td> 1.73e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.06e+14  4.71e+14</td>
-</tr>
-<tr>
-  <th>unit_R295</th> <td> 1.168e+14</td> <td> 1.53e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-1.82e+14  4.16e+14</td>
-</tr>
-<tr>
-  <th>unit_R300</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R303</th> <td> 1.334e+14</td> <td> 1.74e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.08e+14  4.75e+14</td>
-</tr>
-<tr>
-  <th>unit_R304</th> <td> 1.348e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14   4.8e+14</td>
-</tr>
-<tr>
-  <th>unit_R307</th> <td> 1.281e+14</td> <td> 1.67e+14</td> <td>    0.765</td> <td> 0.444</td> <td>   -2e+14  4.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R308</th> <td> 1.308e+14</td> <td> 1.71e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.04e+14  4.66e+14</td>
-</tr>
-<tr>
-  <th>unit_R309</th> <td> 1.311e+14</td> <td> 1.71e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.05e+14  4.67e+14</td>
-</tr>
-<tr>
-  <th>unit_R310</th> <td> 1.296e+14</td> <td> 1.69e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.02e+14  4.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R311</th> <td> 1.315e+14</td> <td> 1.72e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.05e+14  4.68e+14</td>
-</tr>
-<tr>
-  <th>unit_R312</th> <td> 1.345e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14  4.79e+14</td>
-</tr>
-<tr>
-  <th>unit_R313</th> <td> 1.277e+14</td> <td> 1.67e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-1.99e+14  4.55e+14</td>
-</tr>
-<tr>
-  <th>unit_R318</th> <td> 1.341e+14</td> <td> 1.75e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.09e+14  4.78e+14</td>
-</tr>
-<tr>
-  <th>unit_R319</th> <td>  1.33e+14</td> <td> 1.74e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.08e+14  4.74e+14</td>
-</tr>
-<tr>
-  <th>unit_R321</th> <td> 1.356e+14</td> <td> 1.77e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.12e+14  4.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R322</th> <td>  1.33e+14</td> <td> 1.74e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.08e+14  4.74e+14</td>
-</tr>
-<tr>
-  <th>unit_R323</th> <td> 1.304e+14</td> <td>  1.7e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.04e+14  4.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R325</th> <td> 1.315e+14</td> <td> 1.72e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.05e+14  4.68e+14</td>
-</tr>
-<tr>
-  <th>unit_R330</th> <td> 1.323e+14</td> <td> 1.73e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.06e+14  4.71e+14</td>
-</tr>
-<tr>
-  <th>unit_R335</th> <td> 1.273e+14</td> <td> 1.66e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-1.99e+14  4.53e+14</td>
-</tr>
-<tr>
-  <th>unit_R336</th> <td> 1.273e+14</td> <td> 1.66e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-1.99e+14  4.53e+14</td>
-</tr>
-<tr>
-  <th>unit_R337</th> <td> 1.289e+14</td> <td> 1.68e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.01e+14  4.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R338</th> <td> 1.311e+14</td> <td> 1.71e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.05e+14  4.67e+14</td>
-</tr>
-<tr>
-  <th>unit_R341</th> <td> 1.345e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14  4.79e+14</td>
-</tr>
-<tr>
-  <th>unit_R344</th> <td> 1.273e+14</td> <td> 1.66e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-1.99e+14  4.53e+14</td>
-</tr>
-<tr>
-  <th>unit_R345</th> <td> 1.315e+14</td> <td> 1.72e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.05e+14  4.68e+14</td>
-</tr>
-<tr>
-  <th>unit_R346</th> <td> 1.311e+14</td> <td> 1.71e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.05e+14  4.67e+14</td>
-</tr>
-<tr>
-  <th>unit_R348</th> <td> 1.311e+14</td> <td> 1.71e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.05e+14  4.67e+14</td>
-</tr>
-<tr>
-  <th>unit_R354</th> <td> 1.285e+14</td> <td> 1.68e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.01e+14  4.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R356</th> <td> 1.319e+14</td> <td> 1.72e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.06e+14   4.7e+14</td>
-</tr>
-<tr>
-  <th>unit_R358</th> <td> 1.285e+14</td> <td> 1.68e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.01e+14  4.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R370</th> <td> 1.319e+14</td> <td> 1.72e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.06e+14   4.7e+14</td>
-</tr>
-<tr>
-  <th>unit_R371</th> <td> 1.304e+14</td> <td>  1.7e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.04e+14  4.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R372</th> <td> 1.293e+14</td> <td> 1.69e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.02e+14   4.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R373</th> <td> 1.289e+14</td> <td> 1.68e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.01e+14  4.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R382</th> <td> 1.323e+14</td> <td> 1.73e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.06e+14  4.71e+14</td>
-</tr>
-<tr>
-  <th>unit_R424</th> <td> 1.277e+14</td> <td> 1.67e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-1.99e+14  4.55e+14</td>
-</tr>
-<tr>
-  <th>unit_R429</th> <td> 1.345e+14</td> <td> 1.76e+14</td> <td>    0.765</td> <td> 0.444</td> <td> -2.1e+14  4.79e+14</td>
-</tr>
-<tr>
-  <th>unit_R453</th> <td> 1.266e+14</td> <td> 1.65e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-1.98e+14  4.51e+14</td>
-</tr>
-<tr>
-  <th>unit_R454</th> <td> 1.285e+14</td> <td> 1.68e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.01e+14  4.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R455</th> <td> 1.289e+14</td> <td> 1.68e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.01e+14  4.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R456</th> <td> 1.323e+14</td> <td> 1.73e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.06e+14  4.71e+14</td>
-</tr>
-<tr>
-  <th>unit_R459</th> <td> 9.336e+13</td> <td> 1.22e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-1.46e+14  3.32e+14</td>
-</tr>
-<tr>
-  <th>unit_R464</th> <td> 1.293e+14</td> <td> 1.69e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.02e+14   4.6e+14</td>
-</tr>
-<tr>
-  <th>ones</th>      <td> 1886.4938</td> <td>   10.316</td> <td>  182.868</td> <td> 0.000</td> <td> 1866.274  1906.714</td>
+  <th>intercept</th> <td> 1.289e+14</td> <td> 1.68e+14</td> <td>    0.765</td> <td> 0.444</td> <td>-2.01e+14  4.59e+14</td>
 </tr>
 </table>
 <table class="simpletable">
@@ -3876,7 +3176,7 @@ UNIT: without this, any OLS result is disastrous. So I think UNIT serves as a ba
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[116]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class="highlight"><pre><span class="c">#new feature sets</span>
@@ -3892,7 +3192,8 @@ UNIT: without this, any OLS result is disastrous. So I think UNIT serves as a ba
 <span class="c"># fit</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">features</span><span class="p">,)</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
-<span class="n">results</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="n">improved_features</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;day_week&#39;</span><span class="p">,</span> <span class="s">&#39;hour&#39;</span><span class="p">,</span> <span class="s">&#39;meantempi&#39;</span><span class="p">,</span><span class="s">&#39;weekday&#39;</span><span class="p">,</span><span class="s">&#39;intercept&#39;</span><span class="p">]</span>
+<span class="n">results</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">xname</span> <span class="o">=</span> <span class="n">improved_features</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -3903,7 +3204,7 @@ UNIT: without this, any OLS result is disastrous. So I think UNIT serves as a ba
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[116]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[6]:</div>
 
 <div class="output_html rendered_html output_subarea output_pyout">
 <table class="simpletable">
@@ -3921,7 +3222,7 @@ UNIT: without this, any OLS result is disastrous. So I think UNIT serves as a ba
   <th>Date:</th>             <td>Sat, 14 Feb 2015</td> <th>  Prob (F-statistic):</th>   <td>  0.00</td>   
 </tr>
 <tr>
-  <th>Time:</th>                 <td>15:36:33</td>     <th>  Log-Likelihood:    </th> <td>-3.8707e+05</td>
+  <th>Time:</th>                 <td>22:28:35</td>     <th>  Log-Likelihood:    </th> <td>-3.8707e+05</td>
 </tr>
 <tr>
   <th>No. Observations:</th>      <td> 42649</td>      <th>  AIC:               </th>  <td>7.746e+05</td> 
@@ -3953,763 +3254,7 @@ UNIT: without this, any OLS result is disastrous. So I think UNIT serves as a ba
   <th>weekday</th>   <td>  532.8213</td> <td>   18.023</td> <td>   29.564</td> <td> 0.000</td> <td>  497.497   568.146</td>
 </tr>
 <tr>
-  <th>unit_R003</th> <td> 2.958e+13</td> <td> 3.08e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.73e+14  6.33e+14</td>
-</tr>
-<tr>
-  <th>unit_R004</th> <td> 3.019e+13</td> <td> 3.14e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.85e+14  6.46e+14</td>
-</tr>
-<tr>
-  <th>unit_R005</th> <td> 2.993e+13</td> <td> 3.11e+14</td> <td>    0.096</td> <td> 0.923</td> <td> -5.8e+14   6.4e+14</td>
-</tr>
-<tr>
-  <th>unit_R006</th> <td> 3.062e+13</td> <td> 3.18e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.93e+14  6.55e+14</td>
-</tr>
-<tr>
-  <th>unit_R007</th> <td> 2.976e+13</td> <td> 3.09e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.77e+14  6.36e+14</td>
-</tr>
-<tr>
-  <th>unit_R008</th> <td> 2.967e+13</td> <td> 3.09e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.75e+14  6.34e+14</td>
-</tr>
-<tr>
-  <th>unit_R009</th> <td> 3.019e+13</td> <td> 3.14e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.85e+14  6.46e+14</td>
-</tr>
-<tr>
-  <th>unit_R011</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R012</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R013</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R016</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R017</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R018</th> <td> 3.104e+13</td> <td> 3.23e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.02e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R019</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R020</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R021</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R022</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R023</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R024</th> <td> 3.104e+13</td> <td> 3.23e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.02e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R025</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R027</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R029</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R030</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R031</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R032</th> <td> 3.104e+13</td> <td> 3.23e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.02e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R033</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R034</th> <td> 2.976e+13</td> <td> 3.09e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.77e+14  6.36e+14</td>
-</tr>
-<tr>
-  <th>unit_R035</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R036</th> <td> 3.036e+13</td> <td> 3.16e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.89e+14  6.49e+14</td>
-</tr>
-<tr>
-  <th>unit_R037</th> <td> 3.087e+13</td> <td> 3.21e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.98e+14   6.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R038</th> <td> 3.019e+13</td> <td> 3.14e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.85e+14  6.46e+14</td>
-</tr>
-<tr>
-  <th>unit_R039</th> <td> 2.941e+13</td> <td> 3.06e+14</td> <td>    0.096</td> <td> 0.923</td> <td> -5.7e+14  6.29e+14</td>
-</tr>
-<tr>
-  <th>unit_R040</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R041</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R042</th> <td> 3.062e+13</td> <td> 3.18e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.93e+14  6.55e+14</td>
-</tr>
-<tr>
-  <th>unit_R043</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R044</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R046</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R049</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R050</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R051</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R052</th> <td> 2.993e+13</td> <td> 3.11e+14</td> <td>    0.096</td> <td> 0.923</td> <td> -5.8e+14   6.4e+14</td>
-</tr>
-<tr>
-  <th>unit_R053</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R054</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R055</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R056</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R057</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R058</th> <td> 3.104e+13</td> <td> 3.23e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.02e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R059</th> <td> 3.036e+13</td> <td> 3.16e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.89e+14  6.49e+14</td>
-</tr>
-<tr>
-  <th>unit_R060</th> <td> 3.062e+13</td> <td> 3.18e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.93e+14  6.55e+14</td>
-</tr>
-<tr>
-  <th>unit_R061</th> <td>  2.95e+13</td> <td> 3.07e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.72e+14  6.31e+14</td>
-</tr>
-<tr>
-  <th>unit_R062</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R063</th> <td> 2.958e+13</td> <td> 3.08e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.73e+14  6.33e+14</td>
-</tr>
-<tr>
-  <th>unit_R064</th> <td> 3.028e+13</td> <td> 3.15e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.87e+14  6.47e+14</td>
-</tr>
-<tr>
-  <th>unit_R065</th> <td> 2.993e+13</td> <td> 3.11e+14</td> <td>    0.096</td> <td> 0.923</td> <td> -5.8e+14   6.4e+14</td>
-</tr>
-<tr>
-  <th>unit_R066</th> <td> 2.976e+13</td> <td> 3.09e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.77e+14  6.36e+14</td>
-</tr>
-<tr>
-  <th>unit_R067</th> <td>  2.95e+13</td> <td> 3.07e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.72e+14  6.31e+14</td>
-</tr>
-<tr>
-  <th>unit_R068</th> <td>  2.95e+13</td> <td> 3.07e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.72e+14  6.31e+14</td>
-</tr>
-<tr>
-  <th>unit_R069</th> <td> 3.002e+13</td> <td> 3.12e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.82e+14  6.42e+14</td>
-</tr>
-<tr>
-  <th>unit_R070</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R080</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R081</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R082</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R083</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R084</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R085</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R086</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R087</th> <td> 3.079e+13</td> <td>  3.2e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.97e+14  6.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R089</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R090</th> <td>  2.95e+13</td> <td> 3.07e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.72e+14  6.31e+14</td>
-</tr>
-<tr>
-  <th>unit_R091</th> <td> 2.976e+13</td> <td> 3.09e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.77e+14  6.36e+14</td>
-</tr>
-<tr>
-  <th>unit_R092</th> <td> 3.028e+13</td> <td> 3.15e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.87e+14  6.47e+14</td>
-</tr>
-<tr>
-  <th>unit_R093</th> <td> 3.011e+13</td> <td> 3.13e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.84e+14  6.44e+14</td>
-</tr>
-<tr>
-  <th>unit_R094</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R095</th> <td>  3.07e+13</td> <td> 3.19e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.95e+14  6.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R096</th> <td> 3.104e+13</td> <td> 3.23e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.02e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R097</th> <td> 3.104e+13</td> <td> 3.23e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.02e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R098</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R099</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R100</th> <td> 3.079e+13</td> <td>  3.2e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.97e+14  6.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R101</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R102</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R103</th> <td> 2.993e+13</td> <td> 3.11e+14</td> <td>    0.096</td> <td> 0.923</td> <td> -5.8e+14   6.4e+14</td>
-</tr>
-<tr>
-  <th>unit_R104</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R105</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R106</th> <td>  2.95e+13</td> <td> 3.07e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.72e+14  6.31e+14</td>
-</tr>
-<tr>
-  <th>unit_R107</th> <td> 2.941e+13</td> <td> 3.06e+14</td> <td>    0.096</td> <td> 0.923</td> <td> -5.7e+14  6.29e+14</td>
-</tr>
-<tr>
-  <th>unit_R108</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R111</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R112</th> <td> 3.104e+13</td> <td> 3.23e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.02e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R114</th> <td> 3.104e+13</td> <td> 3.23e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.02e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R115</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R116</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R117</th> <td> 2.958e+13</td> <td> 3.08e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.73e+14  6.33e+14</td>
-</tr>
-<tr>
-  <th>unit_R119</th> <td> 3.053e+13</td> <td> 3.18e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.92e+14  6.53e+14</td>
-</tr>
-<tr>
-  <th>unit_R120</th> <td> 3.011e+13</td> <td> 3.13e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.84e+14  6.44e+14</td>
-</tr>
-<tr>
-  <th>unit_R121</th> <td> 3.028e+13</td> <td> 3.15e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.87e+14  6.47e+14</td>
-</tr>
-<tr>
-  <th>unit_R122</th> <td>  3.07e+13</td> <td> 3.19e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.95e+14  6.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R123</th> <td> 3.062e+13</td> <td> 3.18e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.93e+14  6.55e+14</td>
-</tr>
-<tr>
-  <th>unit_R124</th> <td> 2.985e+13</td> <td>  3.1e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.78e+14  6.38e+14</td>
-</tr>
-<tr>
-  <th>unit_R126</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R127</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R137</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R139</th> <td> 3.104e+13</td> <td> 3.23e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.02e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R163</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R172</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R179</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R181</th> <td> 3.053e+13</td> <td> 3.18e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.92e+14  6.53e+14</td>
-</tr>
-<tr>
-  <th>unit_R183</th> <td> 2.941e+13</td> <td> 3.06e+14</td> <td>    0.096</td> <td> 0.923</td> <td> -5.7e+14  6.29e+14</td>
-</tr>
-<tr>
-  <th>unit_R184</th> <td> 2.976e+13</td> <td> 3.09e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.77e+14  6.36e+14</td>
-</tr>
-<tr>
-  <th>unit_R186</th> <td>  3.07e+13</td> <td> 3.19e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.95e+14  6.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R188</th> <td> 3.104e+13</td> <td> 3.23e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.02e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R189</th> <td> 3.036e+13</td> <td> 3.16e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.89e+14  6.49e+14</td>
-</tr>
-<tr>
-  <th>unit_R194</th> <td> 3.053e+13</td> <td> 3.18e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.92e+14  6.53e+14</td>
-</tr>
-<tr>
-  <th>unit_R196</th> <td> 3.087e+13</td> <td> 3.21e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.98e+14   6.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R198</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R199</th> <td> 3.053e+13</td> <td> 3.18e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.92e+14  6.53e+14</td>
-</tr>
-<tr>
-  <th>unit_R200</th> <td> 3.079e+13</td> <td>  3.2e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.97e+14  6.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R202</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R203</th> <td> 3.019e+13</td> <td> 3.14e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.85e+14  6.46e+14</td>
-</tr>
-<tr>
-  <th>unit_R204</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R205</th> <td> 3.079e+13</td> <td>  3.2e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.97e+14  6.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R207</th> <td> 3.104e+13</td> <td> 3.23e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.02e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R208</th> <td> 3.079e+13</td> <td>  3.2e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.97e+14  6.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R209</th> <td> 2.958e+13</td> <td> 3.08e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.73e+14  6.33e+14</td>
-</tr>
-<tr>
-  <th>unit_R210</th> <td> 3.036e+13</td> <td> 3.16e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.89e+14  6.49e+14</td>
-</tr>
-<tr>
-  <th>unit_R211</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R212</th> <td> 3.104e+13</td> <td> 3.23e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.02e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R213</th> <td> 3.045e+13</td> <td> 3.17e+14</td> <td>    0.096</td> <td> 0.923</td> <td> -5.9e+14  6.51e+14</td>
-</tr>
-<tr>
-  <th>unit_R214</th> <td>  2.95e+13</td> <td> 3.07e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.72e+14  6.31e+14</td>
-</tr>
-<tr>
-  <th>unit_R215</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R216</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R217</th> <td> 2.958e+13</td> <td> 3.08e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.73e+14  6.33e+14</td>
-</tr>
-<tr>
-  <th>unit_R218</th> <td> 3.104e+13</td> <td> 3.23e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.02e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R219</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R220</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R221</th> <td>  2.95e+13</td> <td> 3.07e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.72e+14  6.31e+14</td>
-</tr>
-<tr>
-  <th>unit_R223</th> <td> 3.104e+13</td> <td> 3.23e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.02e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R224</th> <td> 3.028e+13</td> <td> 3.15e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.87e+14  6.47e+14</td>
-</tr>
-<tr>
-  <th>unit_R225</th> <td>  3.07e+13</td> <td> 3.19e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.95e+14  6.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R226</th> <td> 2.976e+13</td> <td> 3.09e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.77e+14  6.36e+14</td>
-</tr>
-<tr>
-  <th>unit_R227</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R228</th> <td> 2.967e+13</td> <td> 3.09e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.75e+14  6.34e+14</td>
-</tr>
-<tr>
-  <th>unit_R229</th> <td> 2.985e+13</td> <td>  3.1e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.78e+14  6.38e+14</td>
-</tr>
-<tr>
-  <th>unit_R230</th> <td> 3.019e+13</td> <td> 3.14e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.85e+14  6.46e+14</td>
-</tr>
-<tr>
-  <th>unit_R231</th> <td>  3.07e+13</td> <td> 3.19e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.95e+14  6.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R232</th> <td> 2.993e+13</td> <td> 3.11e+14</td> <td>    0.096</td> <td> 0.923</td> <td> -5.8e+14   6.4e+14</td>
-</tr>
-<tr>
-  <th>unit_R233</th> <td> 2.932e+13</td> <td> 3.05e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.68e+14  6.27e+14</td>
-</tr>
-<tr>
-  <th>unit_R234</th> <td> 2.958e+13</td> <td> 3.08e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.73e+14  6.33e+14</td>
-</tr>
-<tr>
-  <th>unit_R235</th> <td> 3.104e+13</td> <td> 3.23e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.02e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R236</th> <td> 3.079e+13</td> <td>  3.2e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.97e+14  6.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R237</th> <td> 2.967e+13</td> <td> 3.09e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.75e+14  6.34e+14</td>
-</tr>
-<tr>
-  <th>unit_R238</th> <td> 3.104e+13</td> <td> 3.23e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.02e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R239</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R240</th> <td> 3.087e+13</td> <td> 3.21e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.98e+14   6.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R242</th> <td> 3.045e+13</td> <td> 3.17e+14</td> <td>    0.096</td> <td> 0.923</td> <td> -5.9e+14  6.51e+14</td>
-</tr>
-<tr>
-  <th>unit_R243</th> <td> 3.002e+13</td> <td> 3.12e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.82e+14  6.42e+14</td>
-</tr>
-<tr>
-  <th>unit_R244</th> <td> 3.002e+13</td> <td> 3.12e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.82e+14  6.42e+14</td>
-</tr>
-<tr>
-  <th>unit_R246</th> <td> 2.967e+13</td> <td> 3.09e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.75e+14  6.34e+14</td>
-</tr>
-<tr>
-  <th>unit_R247</th> <td> 2.914e+13</td> <td> 3.03e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.65e+14  6.23e+14</td>
-</tr>
-<tr>
-  <th>unit_R248</th> <td> 3.104e+13</td> <td> 3.23e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.02e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R249</th> <td> 3.062e+13</td> <td> 3.18e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.93e+14  6.55e+14</td>
-</tr>
-<tr>
-  <th>unit_R250</th> <td> 3.045e+13</td> <td> 3.17e+14</td> <td>    0.096</td> <td> 0.923</td> <td> -5.9e+14  6.51e+14</td>
-</tr>
-<tr>
-  <th>unit_R251</th> <td> 3.087e+13</td> <td> 3.21e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.98e+14   6.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R252</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R253</th> <td> 2.993e+13</td> <td> 3.11e+14</td> <td>    0.096</td> <td> 0.923</td> <td> -5.8e+14   6.4e+14</td>
-</tr>
-<tr>
-  <th>unit_R254</th> <td> 3.104e+13</td> <td> 3.23e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.02e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R255</th> <td> 3.079e+13</td> <td>  3.2e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.97e+14  6.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R256</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R257</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R258</th> <td> 3.087e+13</td> <td> 3.21e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.98e+14   6.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R259</th> <td> 3.062e+13</td> <td> 3.18e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.93e+14  6.55e+14</td>
-</tr>
-<tr>
-  <th>unit_R260</th> <td> 2.851e+13</td> <td> 2.96e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.53e+14   6.1e+14</td>
-</tr>
-<tr>
-  <th>unit_R261</th> <td> 3.036e+13</td> <td> 3.16e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.89e+14  6.49e+14</td>
-</tr>
-<tr>
-  <th>unit_R262</th> <td> 2.914e+13</td> <td> 3.03e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.65e+14  6.23e+14</td>
-</tr>
-<tr>
-  <th>unit_R263</th> <td> 3.045e+13</td> <td> 3.17e+14</td> <td>    0.096</td> <td> 0.923</td> <td> -5.9e+14  6.51e+14</td>
-</tr>
-<tr>
-  <th>unit_R264</th> <td> 3.104e+13</td> <td> 3.23e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.02e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R265</th> <td> 2.985e+13</td> <td>  3.1e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.78e+14  6.38e+14</td>
-</tr>
-<tr>
-  <th>unit_R266</th> <td> 3.104e+13</td> <td> 3.23e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.02e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R269</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R270</th> <td> 2.967e+13</td> <td> 3.09e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.75e+14  6.34e+14</td>
-</tr>
-<tr>
-  <th>unit_R271</th> <td> 2.976e+13</td> <td> 3.09e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.77e+14  6.36e+14</td>
-</tr>
-<tr>
-  <th>unit_R273</th> <td> 2.958e+13</td> <td> 3.08e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.73e+14  6.33e+14</td>
-</tr>
-<tr>
-  <th>unit_R274</th> <td> 2.993e+13</td> <td> 3.11e+14</td> <td>    0.096</td> <td> 0.923</td> <td> -5.8e+14   6.4e+14</td>
-</tr>
-<tr>
-  <th>unit_R275</th> <td> 3.036e+13</td> <td> 3.16e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.89e+14  6.49e+14</td>
-</tr>
-<tr>
-  <th>unit_R276</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R277</th> <td> 2.887e+13</td> <td>    3e+14</td> <td>    0.096</td> <td> 0.923</td> <td> -5.6e+14  6.17e+14</td>
-</tr>
-<tr>
-  <th>unit_R278</th> <td> 2.985e+13</td> <td>  3.1e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.78e+14  6.38e+14</td>
-</tr>
-<tr>
-  <th>unit_R279</th> <td> 3.053e+13</td> <td> 3.18e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.92e+14  6.53e+14</td>
-</tr>
-<tr>
-  <th>unit_R280</th> <td> 2.905e+13</td> <td> 3.02e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.63e+14  6.21e+14</td>
-</tr>
-<tr>
-  <th>unit_R281</th> <td> 3.062e+13</td> <td> 3.18e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.93e+14  6.55e+14</td>
-</tr>
-<tr>
-  <th>unit_R282</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R284</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R285</th> <td>  2.95e+13</td> <td> 3.07e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.72e+14  6.31e+14</td>
-</tr>
-<tr>
-  <th>unit_R287</th> <td> 2.941e+13</td> <td> 3.06e+14</td> <td>    0.096</td> <td> 0.923</td> <td> -5.7e+14  6.29e+14</td>
-</tr>
-<tr>
-  <th>unit_R291</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R294</th> <td> 3.036e+13</td> <td> 3.16e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.89e+14  6.49e+14</td>
-</tr>
-<tr>
-  <th>unit_R295</th> <td> 2.682e+13</td> <td> 2.79e+14</td> <td>    0.096</td> <td> 0.923</td> <td> -5.2e+14  5.74e+14</td>
-</tr>
-<tr>
-  <th>unit_R300</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R303</th> <td> 3.062e+13</td> <td> 3.18e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.93e+14  6.55e+14</td>
-</tr>
-<tr>
-  <th>unit_R304</th> <td> 3.095e+13</td> <td> 3.22e+14</td> <td>    0.096</td> <td> 0.923</td> <td>   -6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R307</th> <td> 2.941e+13</td> <td> 3.06e+14</td> <td>    0.096</td> <td> 0.923</td> <td> -5.7e+14  6.29e+14</td>
-</tr>
-<tr>
-  <th>unit_R308</th> <td> 3.002e+13</td> <td> 3.12e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.82e+14  6.42e+14</td>
-</tr>
-<tr>
-  <th>unit_R309</th> <td> 3.011e+13</td> <td> 3.13e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.84e+14  6.44e+14</td>
-</tr>
-<tr>
-  <th>unit_R310</th> <td> 2.976e+13</td> <td> 3.09e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.77e+14  6.36e+14</td>
-</tr>
-<tr>
-  <th>unit_R311</th> <td> 3.019e+13</td> <td> 3.14e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.85e+14  6.46e+14</td>
-</tr>
-<tr>
-  <th>unit_R312</th> <td> 3.087e+13</td> <td> 3.21e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.98e+14   6.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R313</th> <td> 2.932e+13</td> <td> 3.05e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.68e+14  6.27e+14</td>
-</tr>
-<tr>
-  <th>unit_R318</th> <td> 3.079e+13</td> <td>  3.2e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.97e+14  6.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R319</th> <td> 3.053e+13</td> <td> 3.18e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.92e+14  6.53e+14</td>
-</tr>
-<tr>
-  <th>unit_R321</th> <td> 3.112e+13</td> <td> 3.24e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-6.03e+14  6.65e+14</td>
-</tr>
-<tr>
-  <th>unit_R322</th> <td> 3.053e+13</td> <td> 3.18e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.92e+14  6.53e+14</td>
-</tr>
-<tr>
-  <th>unit_R323</th> <td> 2.993e+13</td> <td> 3.11e+14</td> <td>    0.096</td> <td> 0.923</td> <td> -5.8e+14   6.4e+14</td>
-</tr>
-<tr>
-  <th>unit_R325</th> <td> 3.019e+13</td> <td> 3.14e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.85e+14  6.46e+14</td>
-</tr>
-<tr>
-  <th>unit_R330</th> <td> 3.036e+13</td> <td> 3.16e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.89e+14  6.49e+14</td>
-</tr>
-<tr>
-  <th>unit_R335</th> <td> 2.923e+13</td> <td> 3.04e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.67e+14  6.25e+14</td>
-</tr>
-<tr>
-  <th>unit_R336</th> <td> 2.923e+13</td> <td> 3.04e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.67e+14  6.25e+14</td>
-</tr>
-<tr>
-  <th>unit_R337</th> <td> 2.958e+13</td> <td> 3.08e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.73e+14  6.33e+14</td>
-</tr>
-<tr>
-  <th>unit_R338</th> <td> 3.011e+13</td> <td> 3.13e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.84e+14  6.44e+14</td>
-</tr>
-<tr>
-  <th>unit_R341</th> <td> 3.087e+13</td> <td> 3.21e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.98e+14   6.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R344</th> <td> 2.923e+13</td> <td> 3.04e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.67e+14  6.25e+14</td>
-</tr>
-<tr>
-  <th>unit_R345</th> <td> 3.019e+13</td> <td> 3.14e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.85e+14  6.46e+14</td>
-</tr>
-<tr>
-  <th>unit_R346</th> <td> 3.011e+13</td> <td> 3.13e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.84e+14  6.44e+14</td>
-</tr>
-<tr>
-  <th>unit_R348</th> <td> 3.011e+13</td> <td> 3.13e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.84e+14  6.44e+14</td>
-</tr>
-<tr>
-  <th>unit_R354</th> <td>  2.95e+13</td> <td> 3.07e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.72e+14  6.31e+14</td>
-</tr>
-<tr>
-  <th>unit_R356</th> <td> 3.028e+13</td> <td> 3.15e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.87e+14  6.47e+14</td>
-</tr>
-<tr>
-  <th>unit_R358</th> <td>  2.95e+13</td> <td> 3.07e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.72e+14  6.31e+14</td>
-</tr>
-<tr>
-  <th>unit_R370</th> <td> 3.028e+13</td> <td> 3.15e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.87e+14  6.47e+14</td>
-</tr>
-<tr>
-  <th>unit_R371</th> <td> 2.993e+13</td> <td> 3.11e+14</td> <td>    0.096</td> <td> 0.923</td> <td> -5.8e+14   6.4e+14</td>
-</tr>
-<tr>
-  <th>unit_R372</th> <td> 2.967e+13</td> <td> 3.09e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.75e+14  6.34e+14</td>
-</tr>
-<tr>
-  <th>unit_R373</th> <td> 2.958e+13</td> <td> 3.08e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.73e+14  6.33e+14</td>
-</tr>
-<tr>
-  <th>unit_R382</th> <td> 3.036e+13</td> <td> 3.16e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.89e+14  6.49e+14</td>
-</tr>
-<tr>
-  <th>unit_R424</th> <td> 2.932e+13</td> <td> 3.05e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.68e+14  6.27e+14</td>
-</tr>
-<tr>
-  <th>unit_R429</th> <td> 3.087e+13</td> <td> 3.21e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.98e+14   6.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R453</th> <td> 2.905e+13</td> <td> 3.02e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.63e+14  6.21e+14</td>
-</tr>
-<tr>
-  <th>unit_R454</th> <td>  2.95e+13</td> <td> 3.07e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.72e+14  6.31e+14</td>
-</tr>
-<tr>
-  <th>unit_R455</th> <td> 2.958e+13</td> <td> 3.08e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.73e+14  6.33e+14</td>
-</tr>
-<tr>
-  <th>unit_R456</th> <td> 3.036e+13</td> <td> 3.16e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.89e+14  6.49e+14</td>
-</tr>
-<tr>
-  <th>unit_R459</th> <td> 2.143e+13</td> <td> 2.23e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-4.15e+14  4.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R464</th> <td> 2.967e+13</td> <td> 3.09e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.75e+14  6.34e+14</td>
-</tr>
-<tr>
-  <th>conds_0</th>   <td>-8.271e+14</td> <td> 2.73e+15</td> <td>   -0.303</td> <td> 0.762</td> <td>-6.17e+15  4.52e+15</td>
-</tr>
-<tr>
-  <th>conds_1</th>   <td>-3.943e+14</td> <td>  1.3e+15</td> <td>   -0.303</td> <td> 0.762</td> <td>-2.94e+15  2.16e+15</td>
-</tr>
-<tr>
-  <th>conds_2</th>   <td>-6.375e+14</td> <td>  2.1e+15</td> <td>   -0.303</td> <td> 0.762</td> <td>-4.76e+15  3.48e+15</td>
-</tr>
-<tr>
-  <th>conds_3</th>   <td>-7.976e+14</td> <td> 2.63e+15</td> <td>   -0.303</td> <td> 0.762</td> <td>-5.95e+15  4.36e+15</td>
-</tr>
-<tr>
-  <th>conds_4</th>   <td>-3.643e+14</td> <td>  1.2e+15</td> <td>   -0.303</td> <td> 0.762</td> <td>-2.72e+15  1.99e+15</td>
-</tr>
-<tr>
-  <th>conds_5</th>   <td>-4.864e+14</td> <td>  1.6e+15</td> <td>   -0.303</td> <td> 0.762</td> <td>-3.63e+15  2.66e+15</td>
-</tr>
-<tr>
-  <th>conds_6</th>   <td>-2.634e+14</td> <td> 8.69e+14</td> <td>   -0.303</td> <td> 0.762</td> <td>-1.97e+15  1.44e+15</td>
-</tr>
-<tr>
-  <th>conds_7</th>   <td>-1.567e+14</td> <td> 5.17e+14</td> <td>   -0.303</td> <td> 0.762</td> <td>-1.17e+15  8.56e+14</td>
-</tr>
-<tr>
-  <th>conds_8</th>   <td>-3.102e+14</td> <td> 1.02e+15</td> <td>   -0.303</td> <td> 0.762</td> <td>-2.32e+15   1.7e+15</td>
-</tr>
-<tr>
-  <th>conds_9</th>   <td>-1.454e+14</td> <td>  4.8e+14</td> <td>   -0.303</td> <td> 0.762</td> <td>-1.09e+15  7.95e+14</td>
-</tr>
-<tr>
-  <th>conds_10</th>  <td>-5.889e+13</td> <td> 1.94e+14</td> <td>   -0.303</td> <td> 0.762</td> <td> -4.4e+14  3.22e+14</td>
-</tr>
-<tr>
-  <th>conds_11</th>  <td>-4.209e+13</td> <td> 1.39e+14</td> <td>   -0.303</td> <td> 0.762</td> <td>-3.14e+14   2.3e+14</td>
-</tr>
-<tr>
-  <th>ones</th>      <td> 1886.5321</td> <td>   10.274</td> <td>  183.620</td> <td> 0.000</td> <td> 1866.395  1906.670</td>
+  <th>intercept</th> <td> 2.958e+13</td> <td> 3.08e+14</td> <td>    0.096</td> <td> 0.923</td> <td>-5.73e+14  6.33e+14</td>
 </tr>
 </table>
 <table class="simpletable">
@@ -4763,7 +3308,7 @@ UNIT: without this, any OLS result is disastrous. So I think UNIT serves as a ba
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[124]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class="highlight"><pre><span class="c">#new feature sets</span>
@@ -4779,7 +3324,8 @@ UNIT: without this, any OLS result is disastrous. So I think UNIT serves as a ba
 <span class="c"># fit</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">features</span><span class="p">,)</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
-<span class="n">results</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="n">xname</span> <span class="o">=</span> <span class="n">improved_features</span> <span class="o">+</span> <span class="p">[</span><span class="s">&#39;meanwspdi&#39;</span><span class="p">]</span>
+<span class="n">results</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">xname</span> <span class="o">=</span> <span class="n">xname</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -4790,7 +3336,7 @@ UNIT: without this, any OLS result is disastrous. So I think UNIT serves as a ba
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[124]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[12]:</div>
 
 <div class="output_html rendered_html output_subarea output_pyout">
 <table class="simpletable">
@@ -4808,7 +3354,7 @@ UNIT: without this, any OLS result is disastrous. So I think UNIT serves as a ba
   <th>Date:</th>             <td>Sat, 14 Feb 2015</td> <th>  Prob (F-statistic):</th>   <td>  0.00</td>   
 </tr>
 <tr>
-  <th>Time:</th>                 <td>17:29:25</td>     <th>  Log-Likelihood:    </th> <td>-3.8707e+05</td>
+  <th>Time:</th>                 <td>21:47:37</td>     <th>  Log-Likelihood:    </th> <td>-3.8707e+05</td>
 </tr>
 <tr>
   <th>No. Observations:</th>      <td> 42649</td>      <th>  AIC:               </th>  <td>7.746e+05</td> 
@@ -4840,766 +3386,10 @@ UNIT: without this, any OLS result is disastrous. So I think UNIT serves as a ba
   <th>weekday</th>   <td>  537.2709</td> <td>   18.171</td> <td>   29.567</td> <td> 0.000</td> <td>  501.655   572.887</td>
 </tr>
 <tr>
-  <th>meanwspdi</th> <td>   30.4434</td> <td>   15.203</td> <td>    2.002</td> <td> 0.045</td> <td>    0.645    60.242</td>
+  <th>intercept</th> <td>   30.4434</td> <td>   15.203</td> <td>    2.002</td> <td> 0.045</td> <td>    0.645    60.242</td>
 </tr>
 <tr>
-  <th>unit_R003</th> <td>-3.809e+13</td> <td> 2.92e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.1e+14  5.34e+14</td>
-</tr>
-<tr>
-  <th>unit_R004</th> <td>-3.887e+13</td> <td> 2.98e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.23e+14  5.45e+14</td>
-</tr>
-<tr>
-  <th>unit_R005</th> <td>-3.854e+13</td> <td> 2.95e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.17e+14   5.4e+14</td>
-</tr>
-<tr>
-  <th>unit_R006</th> <td>-3.942e+13</td> <td> 3.02e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.32e+14  5.53e+14</td>
-</tr>
-<tr>
-  <th>unit_R007</th> <td>-3.832e+13</td> <td> 2.94e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.14e+14  5.37e+14</td>
-</tr>
-<tr>
-  <th>unit_R008</th> <td>-3.821e+13</td> <td> 2.93e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.12e+14  5.36e+14</td>
-</tr>
-<tr>
-  <th>unit_R009</th> <td>-3.887e+13</td> <td> 2.98e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.23e+14  5.45e+14</td>
-</tr>
-<tr>
-  <th>unit_R011</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R012</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R013</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R016</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R017</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R018</th> <td>-3.997e+13</td> <td> 3.06e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.4e+14   5.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R019</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R020</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R021</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R022</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R023</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R024</th> <td>-3.997e+13</td> <td> 3.06e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.4e+14   5.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R025</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R027</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R029</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R030</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R031</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R032</th> <td>-3.997e+13</td> <td> 3.06e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.4e+14   5.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R033</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R034</th> <td>-3.832e+13</td> <td> 2.94e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.14e+14  5.37e+14</td>
-</tr>
-<tr>
-  <th>unit_R035</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R036</th> <td> -3.91e+13</td> <td>    3e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.26e+14  5.48e+14</td>
-</tr>
-<tr>
-  <th>unit_R037</th> <td>-3.975e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.37e+14  5.57e+14</td>
-</tr>
-<tr>
-  <th>unit_R038</th> <td>-3.887e+13</td> <td> 2.98e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.23e+14  5.45e+14</td>
-</tr>
-<tr>
-  <th>unit_R039</th> <td>-3.787e+13</td> <td>  2.9e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.07e+14  5.31e+14</td>
-</tr>
-<tr>
-  <th>unit_R040</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R041</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R042</th> <td>-3.942e+13</td> <td> 3.02e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.32e+14  5.53e+14</td>
-</tr>
-<tr>
-  <th>unit_R043</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R044</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R046</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R049</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R050</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R051</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R052</th> <td>-3.854e+13</td> <td> 2.95e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.17e+14   5.4e+14</td>
-</tr>
-<tr>
-  <th>unit_R053</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R054</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R055</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R056</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R057</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R058</th> <td>-3.997e+13</td> <td> 3.06e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.4e+14   5.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R059</th> <td> -3.91e+13</td> <td>    3e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.26e+14  5.48e+14</td>
-</tr>
-<tr>
-  <th>unit_R060</th> <td>-3.942e+13</td> <td> 3.02e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.32e+14  5.53e+14</td>
-</tr>
-<tr>
-  <th>unit_R061</th> <td>-3.798e+13</td> <td> 2.91e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.08e+14  5.32e+14</td>
-</tr>
-<tr>
-  <th>unit_R062</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R063</th> <td>-3.809e+13</td> <td> 2.92e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.1e+14  5.34e+14</td>
-</tr>
-<tr>
-  <th>unit_R064</th> <td>-3.899e+13</td> <td> 2.99e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.25e+14  5.47e+14</td>
-</tr>
-<tr>
-  <th>unit_R065</th> <td>-3.854e+13</td> <td> 2.95e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.17e+14   5.4e+14</td>
-</tr>
-<tr>
-  <th>unit_R066</th> <td>-3.832e+13</td> <td> 2.94e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.14e+14  5.37e+14</td>
-</tr>
-<tr>
-  <th>unit_R067</th> <td>-3.798e+13</td> <td> 2.91e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.08e+14  5.32e+14</td>
-</tr>
-<tr>
-  <th>unit_R068</th> <td>-3.798e+13</td> <td> 2.91e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.08e+14  5.32e+14</td>
-</tr>
-<tr>
-  <th>unit_R069</th> <td>-3.865e+13</td> <td> 2.96e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.19e+14  5.42e+14</td>
-</tr>
-<tr>
-  <th>unit_R070</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R080</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R081</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R082</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R083</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R084</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R085</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R086</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R087</th> <td>-3.964e+13</td> <td> 3.04e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.35e+14  5.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R089</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R090</th> <td>-3.798e+13</td> <td> 2.91e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.08e+14  5.32e+14</td>
-</tr>
-<tr>
-  <th>unit_R091</th> <td>-3.832e+13</td> <td> 2.94e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.14e+14  5.37e+14</td>
-</tr>
-<tr>
-  <th>unit_R092</th> <td>-3.899e+13</td> <td> 2.99e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.25e+14  5.47e+14</td>
-</tr>
-<tr>
-  <th>unit_R093</th> <td>-3.876e+13</td> <td> 2.97e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.21e+14  5.43e+14</td>
-</tr>
-<tr>
-  <th>unit_R094</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R095</th> <td>-3.953e+13</td> <td> 3.03e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.33e+14  5.54e+14</td>
-</tr>
-<tr>
-  <th>unit_R096</th> <td>-3.997e+13</td> <td> 3.06e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.4e+14   5.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R097</th> <td>-3.997e+13</td> <td> 3.06e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.4e+14   5.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R098</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R099</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R100</th> <td>-3.964e+13</td> <td> 3.04e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.35e+14  5.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R101</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R102</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R103</th> <td>-3.854e+13</td> <td> 2.95e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.17e+14   5.4e+14</td>
-</tr>
-<tr>
-  <th>unit_R104</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R105</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R106</th> <td>-3.798e+13</td> <td> 2.91e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.08e+14  5.32e+14</td>
-</tr>
-<tr>
-  <th>unit_R107</th> <td>-3.787e+13</td> <td>  2.9e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.07e+14  5.31e+14</td>
-</tr>
-<tr>
-  <th>unit_R108</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R111</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R112</th> <td>-3.997e+13</td> <td> 3.06e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.4e+14   5.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R114</th> <td>-3.997e+13</td> <td> 3.06e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.4e+14   5.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R115</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R116</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R117</th> <td>-3.809e+13</td> <td> 2.92e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.1e+14  5.34e+14</td>
-</tr>
-<tr>
-  <th>unit_R119</th> <td>-3.931e+13</td> <td> 3.01e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.3e+14  5.51e+14</td>
-</tr>
-<tr>
-  <th>unit_R120</th> <td>-3.876e+13</td> <td> 2.97e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.21e+14  5.43e+14</td>
-</tr>
-<tr>
-  <th>unit_R121</th> <td>-3.899e+13</td> <td> 2.99e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.25e+14  5.47e+14</td>
-</tr>
-<tr>
-  <th>unit_R122</th> <td>-3.953e+13</td> <td> 3.03e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.33e+14  5.54e+14</td>
-</tr>
-<tr>
-  <th>unit_R123</th> <td>-3.942e+13</td> <td> 3.02e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.32e+14  5.53e+14</td>
-</tr>
-<tr>
-  <th>unit_R124</th> <td>-3.843e+13</td> <td> 2.94e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.16e+14  5.39e+14</td>
-</tr>
-<tr>
-  <th>unit_R126</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R127</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R137</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R139</th> <td>-3.997e+13</td> <td> 3.06e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.4e+14   5.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R163</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R172</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R179</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R181</th> <td>-3.931e+13</td> <td> 3.01e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.3e+14  5.51e+14</td>
-</tr>
-<tr>
-  <th>unit_R183</th> <td>-3.787e+13</td> <td>  2.9e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.07e+14  5.31e+14</td>
-</tr>
-<tr>
-  <th>unit_R184</th> <td>-3.832e+13</td> <td> 2.94e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.14e+14  5.37e+14</td>
-</tr>
-<tr>
-  <th>unit_R186</th> <td>-3.953e+13</td> <td> 3.03e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.33e+14  5.54e+14</td>
-</tr>
-<tr>
-  <th>unit_R188</th> <td>-3.997e+13</td> <td> 3.06e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.4e+14   5.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R189</th> <td> -3.91e+13</td> <td>    3e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.26e+14  5.48e+14</td>
-</tr>
-<tr>
-  <th>unit_R194</th> <td>-3.931e+13</td> <td> 3.01e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.3e+14  5.51e+14</td>
-</tr>
-<tr>
-  <th>unit_R196</th> <td>-3.975e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.37e+14  5.57e+14</td>
-</tr>
-<tr>
-  <th>unit_R198</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R199</th> <td>-3.931e+13</td> <td> 3.01e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.3e+14  5.51e+14</td>
-</tr>
-<tr>
-  <th>unit_R200</th> <td>-3.964e+13</td> <td> 3.04e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.35e+14  5.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R202</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R203</th> <td>-3.887e+13</td> <td> 2.98e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.23e+14  5.45e+14</td>
-</tr>
-<tr>
-  <th>unit_R204</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R205</th> <td>-3.964e+13</td> <td> 3.04e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.35e+14  5.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R207</th> <td>-3.997e+13</td> <td> 3.06e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.4e+14   5.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R208</th> <td>-3.964e+13</td> <td> 3.04e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.35e+14  5.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R209</th> <td>-3.809e+13</td> <td> 2.92e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.1e+14  5.34e+14</td>
-</tr>
-<tr>
-  <th>unit_R210</th> <td> -3.91e+13</td> <td>    3e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.26e+14  5.48e+14</td>
-</tr>
-<tr>
-  <th>unit_R211</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R212</th> <td>-3.997e+13</td> <td> 3.06e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.4e+14   5.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R213</th> <td>-3.921e+13</td> <td>    3e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.28e+14   5.5e+14</td>
-</tr>
-<tr>
-  <th>unit_R214</th> <td>-3.798e+13</td> <td> 2.91e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.08e+14  5.32e+14</td>
-</tr>
-<tr>
-  <th>unit_R215</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R216</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R217</th> <td>-3.809e+13</td> <td> 2.92e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.1e+14  5.34e+14</td>
-</tr>
-<tr>
-  <th>unit_R218</th> <td>-3.997e+13</td> <td> 3.06e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.4e+14   5.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R219</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R220</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R221</th> <td>-3.798e+13</td> <td> 2.91e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.08e+14  5.32e+14</td>
-</tr>
-<tr>
-  <th>unit_R223</th> <td>-3.997e+13</td> <td> 3.06e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.4e+14   5.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R224</th> <td>-3.899e+13</td> <td> 2.99e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.25e+14  5.47e+14</td>
-</tr>
-<tr>
-  <th>unit_R225</th> <td>-3.953e+13</td> <td> 3.03e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.33e+14  5.54e+14</td>
-</tr>
-<tr>
-  <th>unit_R226</th> <td>-3.832e+13</td> <td> 2.94e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.14e+14  5.37e+14</td>
-</tr>
-<tr>
-  <th>unit_R227</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R228</th> <td>-3.821e+13</td> <td> 2.93e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.12e+14  5.36e+14</td>
-</tr>
-<tr>
-  <th>unit_R229</th> <td>-3.843e+13</td> <td> 2.94e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.16e+14  5.39e+14</td>
-</tr>
-<tr>
-  <th>unit_R230</th> <td>-3.887e+13</td> <td> 2.98e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.23e+14  5.45e+14</td>
-</tr>
-<tr>
-  <th>unit_R231</th> <td>-3.953e+13</td> <td> 3.03e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.33e+14  5.54e+14</td>
-</tr>
-<tr>
-  <th>unit_R232</th> <td>-3.854e+13</td> <td> 2.95e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.17e+14   5.4e+14</td>
-</tr>
-<tr>
-  <th>unit_R233</th> <td>-3.775e+13</td> <td> 2.89e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.05e+14  5.29e+14</td>
-</tr>
-<tr>
-  <th>unit_R234</th> <td>-3.809e+13</td> <td> 2.92e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.1e+14  5.34e+14</td>
-</tr>
-<tr>
-  <th>unit_R235</th> <td>-3.997e+13</td> <td> 3.06e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.4e+14   5.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R236</th> <td>-3.964e+13</td> <td> 3.04e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.35e+14  5.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R237</th> <td>-3.821e+13</td> <td> 2.93e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.12e+14  5.36e+14</td>
-</tr>
-<tr>
-  <th>unit_R238</th> <td>-3.997e+13</td> <td> 3.06e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.4e+14   5.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R239</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R240</th> <td>-3.975e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.37e+14  5.57e+14</td>
-</tr>
-<tr>
-  <th>unit_R242</th> <td>-3.921e+13</td> <td>    3e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.28e+14   5.5e+14</td>
-</tr>
-<tr>
-  <th>unit_R243</th> <td>-3.865e+13</td> <td> 2.96e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.19e+14  5.42e+14</td>
-</tr>
-<tr>
-  <th>unit_R244</th> <td>-3.865e+13</td> <td> 2.96e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.19e+14  5.42e+14</td>
-</tr>
-<tr>
-  <th>unit_R246</th> <td>-3.821e+13</td> <td> 2.93e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.12e+14  5.36e+14</td>
-</tr>
-<tr>
-  <th>unit_R247</th> <td>-3.752e+13</td> <td> 2.88e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.01e+14  5.26e+14</td>
-</tr>
-<tr>
-  <th>unit_R248</th> <td>-3.997e+13</td> <td> 3.06e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.4e+14   5.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R249</th> <td>-3.942e+13</td> <td> 3.02e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.32e+14  5.53e+14</td>
-</tr>
-<tr>
-  <th>unit_R250</th> <td>-3.921e+13</td> <td>    3e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.28e+14   5.5e+14</td>
-</tr>
-<tr>
-  <th>unit_R251</th> <td>-3.975e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.37e+14  5.57e+14</td>
-</tr>
-<tr>
-  <th>unit_R252</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R253</th> <td>-3.854e+13</td> <td> 2.95e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.17e+14   5.4e+14</td>
-</tr>
-<tr>
-  <th>unit_R254</th> <td>-3.997e+13</td> <td> 3.06e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.4e+14   5.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R255</th> <td>-3.964e+13</td> <td> 3.04e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.35e+14  5.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R256</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R257</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R258</th> <td>-3.975e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.37e+14  5.57e+14</td>
-</tr>
-<tr>
-  <th>unit_R259</th> <td>-3.942e+13</td> <td> 3.02e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.32e+14  5.53e+14</td>
-</tr>
-<tr>
-  <th>unit_R260</th> <td>-3.671e+13</td> <td> 2.81e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-5.88e+14  5.15e+14</td>
-</tr>
-<tr>
-  <th>unit_R261</th> <td> -3.91e+13</td> <td>    3e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.26e+14  5.48e+14</td>
-</tr>
-<tr>
-  <th>unit_R262</th> <td>-3.752e+13</td> <td> 2.88e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.01e+14  5.26e+14</td>
-</tr>
-<tr>
-  <th>unit_R263</th> <td>-3.921e+13</td> <td>    3e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.28e+14   5.5e+14</td>
-</tr>
-<tr>
-  <th>unit_R264</th> <td>-3.997e+13</td> <td> 3.06e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.4e+14   5.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R265</th> <td>-3.843e+13</td> <td> 2.94e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.16e+14  5.39e+14</td>
-</tr>
-<tr>
-  <th>unit_R266</th> <td>-3.997e+13</td> <td> 3.06e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.4e+14   5.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R269</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R270</th> <td>-3.821e+13</td> <td> 2.93e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.12e+14  5.36e+14</td>
-</tr>
-<tr>
-  <th>unit_R271</th> <td>-3.832e+13</td> <td> 2.94e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.14e+14  5.37e+14</td>
-</tr>
-<tr>
-  <th>unit_R273</th> <td>-3.809e+13</td> <td> 2.92e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.1e+14  5.34e+14</td>
-</tr>
-<tr>
-  <th>unit_R274</th> <td>-3.854e+13</td> <td> 2.95e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.17e+14   5.4e+14</td>
-</tr>
-<tr>
-  <th>unit_R275</th> <td> -3.91e+13</td> <td>    3e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.26e+14  5.48e+14</td>
-</tr>
-<tr>
-  <th>unit_R276</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R277</th> <td>-3.718e+13</td> <td> 2.85e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-5.96e+14  5.21e+14</td>
-</tr>
-<tr>
-  <th>unit_R278</th> <td>-3.843e+13</td> <td> 2.94e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.16e+14  5.39e+14</td>
-</tr>
-<tr>
-  <th>unit_R279</th> <td>-3.931e+13</td> <td> 3.01e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.3e+14  5.51e+14</td>
-</tr>
-<tr>
-  <th>unit_R280</th> <td>-3.741e+13</td> <td> 2.87e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-5.99e+14  5.24e+14</td>
-</tr>
-<tr>
-  <th>unit_R281</th> <td>-3.942e+13</td> <td> 3.02e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.32e+14  5.53e+14</td>
-</tr>
-<tr>
-  <th>unit_R282</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R284</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R285</th> <td>-3.798e+13</td> <td> 2.91e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.08e+14  5.32e+14</td>
-</tr>
-<tr>
-  <th>unit_R287</th> <td>-3.787e+13</td> <td>  2.9e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.07e+14  5.31e+14</td>
-</tr>
-<tr>
-  <th>unit_R291</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R294</th> <td> -3.91e+13</td> <td>    3e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.26e+14  5.48e+14</td>
-</tr>
-<tr>
-  <th>unit_R295</th> <td>-3.454e+13</td> <td> 2.65e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-5.53e+14  4.84e+14</td>
-</tr>
-<tr>
-  <th>unit_R300</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R303</th> <td>-3.942e+13</td> <td> 3.02e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.32e+14  5.53e+14</td>
-</tr>
-<tr>
-  <th>unit_R304</th> <td>-3.986e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.39e+14  5.59e+14</td>
-</tr>
-<tr>
-  <th>unit_R307</th> <td>-3.787e+13</td> <td>  2.9e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.07e+14  5.31e+14</td>
-</tr>
-<tr>
-  <th>unit_R308</th> <td>-3.865e+13</td> <td> 2.96e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.19e+14  5.42e+14</td>
-</tr>
-<tr>
-  <th>unit_R309</th> <td>-3.876e+13</td> <td> 2.97e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.21e+14  5.43e+14</td>
-</tr>
-<tr>
-  <th>unit_R310</th> <td>-3.832e+13</td> <td> 2.94e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.14e+14  5.37e+14</td>
-</tr>
-<tr>
-  <th>unit_R311</th> <td>-3.887e+13</td> <td> 2.98e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.23e+14  5.45e+14</td>
-</tr>
-<tr>
-  <th>unit_R312</th> <td>-3.975e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.37e+14  5.57e+14</td>
-</tr>
-<tr>
-  <th>unit_R313</th> <td>-3.775e+13</td> <td> 2.89e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.05e+14  5.29e+14</td>
-</tr>
-<tr>
-  <th>unit_R318</th> <td>-3.964e+13</td> <td> 3.04e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.35e+14  5.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R319</th> <td>-3.931e+13</td> <td> 3.01e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.3e+14  5.51e+14</td>
-</tr>
-<tr>
-  <th>unit_R321</th> <td>-4.007e+13</td> <td> 3.07e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.42e+14  5.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R322</th> <td>-3.931e+13</td> <td> 3.01e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.3e+14  5.51e+14</td>
-</tr>
-<tr>
-  <th>unit_R323</th> <td>-3.854e+13</td> <td> 2.95e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.17e+14   5.4e+14</td>
-</tr>
-<tr>
-  <th>unit_R325</th> <td>-3.887e+13</td> <td> 2.98e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.23e+14  5.45e+14</td>
-</tr>
-<tr>
-  <th>unit_R330</th> <td> -3.91e+13</td> <td>    3e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.26e+14  5.48e+14</td>
-</tr>
-<tr>
-  <th>unit_R335</th> <td>-3.764e+13</td> <td> 2.88e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.03e+14  5.28e+14</td>
-</tr>
-<tr>
-  <th>unit_R336</th> <td>-3.764e+13</td> <td> 2.88e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.03e+14  5.28e+14</td>
-</tr>
-<tr>
-  <th>unit_R337</th> <td>-3.809e+13</td> <td> 2.92e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.1e+14  5.34e+14</td>
-</tr>
-<tr>
-  <th>unit_R338</th> <td>-3.876e+13</td> <td> 2.97e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.21e+14  5.43e+14</td>
-</tr>
-<tr>
-  <th>unit_R341</th> <td>-3.975e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.37e+14  5.57e+14</td>
-</tr>
-<tr>
-  <th>unit_R344</th> <td>-3.764e+13</td> <td> 2.88e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.03e+14  5.28e+14</td>
-</tr>
-<tr>
-  <th>unit_R345</th> <td>-3.887e+13</td> <td> 2.98e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.23e+14  5.45e+14</td>
-</tr>
-<tr>
-  <th>unit_R346</th> <td>-3.876e+13</td> <td> 2.97e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.21e+14  5.43e+14</td>
-</tr>
-<tr>
-  <th>unit_R348</th> <td>-3.876e+13</td> <td> 2.97e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.21e+14  5.43e+14</td>
-</tr>
-<tr>
-  <th>unit_R354</th> <td>-3.798e+13</td> <td> 2.91e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.08e+14  5.32e+14</td>
-</tr>
-<tr>
-  <th>unit_R356</th> <td>-3.899e+13</td> <td> 2.99e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.25e+14  5.47e+14</td>
-</tr>
-<tr>
-  <th>unit_R358</th> <td>-3.798e+13</td> <td> 2.91e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.08e+14  5.32e+14</td>
-</tr>
-<tr>
-  <th>unit_R370</th> <td>-3.899e+13</td> <td> 2.99e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.25e+14  5.47e+14</td>
-</tr>
-<tr>
-  <th>unit_R371</th> <td>-3.854e+13</td> <td> 2.95e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.17e+14   5.4e+14</td>
-</tr>
-<tr>
-  <th>unit_R372</th> <td>-3.821e+13</td> <td> 2.93e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.12e+14  5.36e+14</td>
-</tr>
-<tr>
-  <th>unit_R373</th> <td>-3.809e+13</td> <td> 2.92e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.1e+14  5.34e+14</td>
-</tr>
-<tr>
-  <th>unit_R382</th> <td> -3.91e+13</td> <td>    3e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.26e+14  5.48e+14</td>
-</tr>
-<tr>
-  <th>unit_R424</th> <td>-3.775e+13</td> <td> 2.89e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.05e+14  5.29e+14</td>
-</tr>
-<tr>
-  <th>unit_R429</th> <td>-3.975e+13</td> <td> 3.05e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.37e+14  5.57e+14</td>
-</tr>
-<tr>
-  <th>unit_R453</th> <td>-3.741e+13</td> <td> 2.87e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-5.99e+14  5.24e+14</td>
-</tr>
-<tr>
-  <th>unit_R454</th> <td>-3.798e+13</td> <td> 2.91e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.08e+14  5.32e+14</td>
-</tr>
-<tr>
-  <th>unit_R455</th> <td>-3.809e+13</td> <td> 2.92e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.1e+14  5.34e+14</td>
-</tr>
-<tr>
-  <th>unit_R456</th> <td> -3.91e+13</td> <td>    3e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.26e+14  5.48e+14</td>
-</tr>
-<tr>
-  <th>unit_R459</th> <td> -2.76e+13</td> <td> 2.11e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-4.42e+14  3.87e+14</td>
-</tr>
-<tr>
-  <th>unit_R464</th> <td>-3.821e+13</td> <td> 2.93e+14</td> <td>   -0.130</td> <td> 0.896</td> <td>-6.12e+14  5.36e+14</td>
-</tr>
-<tr>
-  <th>conds_0</th>   <td> 3.291e+13</td> <td> 2.52e+14</td> <td>    0.130</td> <td> 0.896</td> <td>-4.61e+14  5.27e+14</td>
-</tr>
-<tr>
-  <th>conds_1</th>   <td> 1.569e+13</td> <td>  1.2e+14</td> <td>    0.130</td> <td> 0.896</td> <td> -2.2e+14  2.51e+14</td>
-</tr>
-<tr>
-  <th>conds_2</th>   <td> 2.537e+13</td> <td> 1.94e+14</td> <td>    0.130</td> <td> 0.896</td> <td>-3.56e+14  4.06e+14</td>
-</tr>
-<tr>
-  <th>conds_3</th>   <td> 3.173e+13</td> <td> 2.43e+14</td> <td>    0.130</td> <td> 0.896</td> <td>-4.45e+14  5.08e+14</td>
-</tr>
-<tr>
-  <th>conds_4</th>   <td>  1.45e+13</td> <td> 1.11e+14</td> <td>    0.130</td> <td> 0.896</td> <td>-2.03e+14  2.32e+14</td>
-</tr>
-<tr>
-  <th>conds_5</th>   <td> 1.935e+13</td> <td> 1.48e+14</td> <td>    0.130</td> <td> 0.896</td> <td>-2.71e+14   3.1e+14</td>
-</tr>
-<tr>
-  <th>conds_6</th>   <td> 1.048e+13</td> <td> 8.03e+13</td> <td>    0.130</td> <td> 0.896</td> <td>-1.47e+14  1.68e+14</td>
-</tr>
-<tr>
-  <th>conds_7</th>   <td> 6.234e+12</td> <td> 4.78e+13</td> <td>    0.130</td> <td> 0.896</td> <td>-8.74e+13  9.99e+13</td>
-</tr>
-<tr>
-  <th>conds_8</th>   <td> 1.234e+13</td> <td> 9.46e+13</td> <td>    0.130</td> <td> 0.896</td> <td>-1.73e+14  1.98e+14</td>
-</tr>
-<tr>
-  <th>conds_9</th>   <td> 5.784e+12</td> <td> 4.43e+13</td> <td>    0.130</td> <td> 0.896</td> <td>-8.11e+13  9.27e+13</td>
-</tr>
-<tr>
-  <th>conds_10</th>  <td> 2.343e+12</td> <td>  1.8e+13</td> <td>    0.130</td> <td> 0.896</td> <td>-3.28e+13  3.75e+13</td>
-</tr>
-<tr>
-  <th>conds_11</th>  <td> 1.675e+12</td> <td> 1.28e+13</td> <td>    0.130</td> <td> 0.896</td> <td>-2.35e+13  2.68e+13</td>
-</tr>
-<tr>
-  <th>ones</th>      <td> 1886.5891</td> <td>   10.271</td> <td>  183.682</td> <td> 0.000</td> <td> 1866.458  1906.720</td>
+  <th>meanwspdi</th> <td>-3.809e+13</td> <td> 2.92e+14</td> <td>   -0.130</td> <td> 0.896</td> <td> -6.1e+14  5.34e+14</td>
 </tr>
 </table>
 <table class="simpletable">
@@ -6613,7 +4403,7 @@ rkJggg==
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[159]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class="highlight"><pre><span class="c">#new feature sets</span>
@@ -6629,7 +4419,8 @@ rkJggg==
 <span class="c"># fit</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">features</span><span class="p">,)</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
-<span class="n">results</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="n">xname</span> <span class="o">=</span> <span class="n">improved_features</span> <span class="o">+</span> <span class="p">[</span><span class="s">&#39;rain&#39;</span><span class="p">]</span>
+<span class="n">results</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">xname</span> <span class="o">=</span> <span class="n">xname</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -6640,7 +4431,7 @@ rkJggg==
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[159]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[13]:</div>
 
 <div class="output_html rendered_html output_subarea output_pyout">
 <table class="simpletable">
@@ -6658,7 +4449,7 @@ rkJggg==
   <th>Date:</th>             <td>Sat, 14 Feb 2015</td> <th>  Prob (F-statistic):</th>   <td>  0.00</td>   
 </tr>
 <tr>
-  <th>Time:</th>                 <td>18:40:53</td>     <th>  Log-Likelihood:    </th> <td>-3.8707e+05</td>
+  <th>Time:</th>                 <td>21:47:56</td>     <th>  Log-Likelihood:    </th> <td>-3.8707e+05</td>
 </tr>
 <tr>
   <th>No. Observations:</th>      <td> 42649</td>      <th>  AIC:               </th>  <td>7.746e+05</td> 
@@ -6690,766 +4481,10 @@ rkJggg==
   <th>weekday</th>   <td>  527.4804</td> <td>   18.201</td> <td>   28.981</td> <td> 0.000</td> <td>  491.806   563.155</td>
 </tr>
 <tr>
-  <th>rain</th>      <td>   29.2956</td> <td>   13.464</td> <td>    2.176</td> <td> 0.030</td> <td>    2.905    55.686</td>
+  <th>intercept</th> <td>   29.2956</td> <td>   13.464</td> <td>    2.176</td> <td> 0.030</td> <td>    2.905    55.686</td>
 </tr>
 <tr>
-  <th>unit_R003</th> <td> 5.099e+13</td> <td>  3.1e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.56e+14  6.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R004</th> <td> 5.204e+13</td> <td> 3.16e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.68e+14  6.72e+14</td>
-</tr>
-<tr>
-  <th>unit_R005</th> <td> 5.159e+13</td> <td> 3.13e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.63e+14  6.66e+14</td>
-</tr>
-<tr>
-  <th>unit_R006</th> <td> 5.277e+13</td> <td> 3.21e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.76e+14  6.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R007</th> <td> 5.129e+13</td> <td> 3.12e+14</td> <td>    0.165</td> <td> 0.869</td> <td> -5.6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R008</th> <td> 5.114e+13</td> <td> 3.11e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.58e+14   6.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R009</th> <td> 5.204e+13</td> <td> 3.16e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.68e+14  6.72e+14</td>
-</tr>
-<tr>
-  <th>unit_R011</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R012</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R013</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R016</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R017</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R018</th> <td>  5.35e+13</td> <td> 3.25e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.84e+14  6.91e+14</td>
-</tr>
-<tr>
-  <th>unit_R019</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R020</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R021</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R022</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R023</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R024</th> <td>  5.35e+13</td> <td> 3.25e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.84e+14  6.91e+14</td>
-</tr>
-<tr>
-  <th>unit_R025</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R027</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R029</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R030</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R031</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R032</th> <td>  5.35e+13</td> <td> 3.25e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.84e+14  6.91e+14</td>
-</tr>
-<tr>
-  <th>unit_R033</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R034</th> <td> 5.129e+13</td> <td> 3.12e+14</td> <td>    0.165</td> <td> 0.869</td> <td> -5.6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R035</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R036</th> <td> 5.233e+13</td> <td> 3.18e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.71e+14  6.76e+14</td>
-</tr>
-<tr>
-  <th>unit_R037</th> <td> 5.321e+13</td> <td> 3.23e+14</td> <td>    0.165</td> <td> 0.869</td> <td> -5.8e+14  6.87e+14</td>
-</tr>
-<tr>
-  <th>unit_R038</th> <td> 5.204e+13</td> <td> 3.16e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.68e+14  6.72e+14</td>
-</tr>
-<tr>
-  <th>unit_R039</th> <td> 5.069e+13</td> <td> 3.08e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.53e+14  6.54e+14</td>
-</tr>
-<tr>
-  <th>unit_R040</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R041</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R042</th> <td> 5.277e+13</td> <td> 3.21e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.76e+14  6.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R043</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R044</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R046</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R049</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R050</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R051</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R052</th> <td> 5.159e+13</td> <td> 3.13e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.63e+14  6.66e+14</td>
-</tr>
-<tr>
-  <th>unit_R053</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R054</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R055</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R056</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R057</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R058</th> <td>  5.35e+13</td> <td> 3.25e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.84e+14  6.91e+14</td>
-</tr>
-<tr>
-  <th>unit_R059</th> <td> 5.233e+13</td> <td> 3.18e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.71e+14  6.76e+14</td>
-</tr>
-<tr>
-  <th>unit_R060</th> <td> 5.277e+13</td> <td> 3.21e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.76e+14  6.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R061</th> <td> 5.084e+13</td> <td> 3.09e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.55e+14  6.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R062</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R063</th> <td> 5.099e+13</td> <td>  3.1e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.56e+14  6.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R064</th> <td> 5.218e+13</td> <td> 3.17e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.69e+14  6.74e+14</td>
-</tr>
-<tr>
-  <th>unit_R065</th> <td> 5.159e+13</td> <td> 3.13e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.63e+14  6.66e+14</td>
-</tr>
-<tr>
-  <th>unit_R066</th> <td> 5.129e+13</td> <td> 3.12e+14</td> <td>    0.165</td> <td> 0.869</td> <td> -5.6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R067</th> <td> 5.084e+13</td> <td> 3.09e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.55e+14  6.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R068</th> <td> 5.084e+13</td> <td> 3.09e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.55e+14  6.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R069</th> <td> 5.174e+13</td> <td> 3.14e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.64e+14  6.68e+14</td>
-</tr>
-<tr>
-  <th>unit_R070</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R080</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R081</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R082</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R083</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R084</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R085</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R086</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R087</th> <td> 5.306e+13</td> <td> 3.22e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.79e+14  6.85e+14</td>
-</tr>
-<tr>
-  <th>unit_R089</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R090</th> <td> 5.084e+13</td> <td> 3.09e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.55e+14  6.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R091</th> <td> 5.129e+13</td> <td> 3.12e+14</td> <td>    0.165</td> <td> 0.869</td> <td> -5.6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R092</th> <td> 5.218e+13</td> <td> 3.17e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.69e+14  6.74e+14</td>
-</tr>
-<tr>
-  <th>unit_R093</th> <td> 5.189e+13</td> <td> 3.15e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.66e+14   6.7e+14</td>
-</tr>
-<tr>
-  <th>unit_R094</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R095</th> <td> 5.292e+13</td> <td> 3.22e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.77e+14  6.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R096</th> <td>  5.35e+13</td> <td> 3.25e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.84e+14  6.91e+14</td>
-</tr>
-<tr>
-  <th>unit_R097</th> <td>  5.35e+13</td> <td> 3.25e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.84e+14  6.91e+14</td>
-</tr>
-<tr>
-  <th>unit_R098</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R099</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R100</th> <td> 5.306e+13</td> <td> 3.22e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.79e+14  6.85e+14</td>
-</tr>
-<tr>
-  <th>unit_R101</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R102</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R103</th> <td> 5.159e+13</td> <td> 3.13e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.63e+14  6.66e+14</td>
-</tr>
-<tr>
-  <th>unit_R104</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R105</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R106</th> <td> 5.084e+13</td> <td> 3.09e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.55e+14  6.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R107</th> <td> 5.069e+13</td> <td> 3.08e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.53e+14  6.54e+14</td>
-</tr>
-<tr>
-  <th>unit_R108</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R111</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R112</th> <td>  5.35e+13</td> <td> 3.25e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.84e+14  6.91e+14</td>
-</tr>
-<tr>
-  <th>unit_R114</th> <td>  5.35e+13</td> <td> 3.25e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.84e+14  6.91e+14</td>
-</tr>
-<tr>
-  <th>unit_R115</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R116</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R117</th> <td> 5.099e+13</td> <td>  3.1e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.56e+14  6.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R119</th> <td> 5.262e+13</td> <td>  3.2e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.74e+14  6.79e+14</td>
-</tr>
-<tr>
-  <th>unit_R120</th> <td> 5.189e+13</td> <td> 3.15e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.66e+14   6.7e+14</td>
-</tr>
-<tr>
-  <th>unit_R121</th> <td> 5.218e+13</td> <td> 3.17e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.69e+14  6.74e+14</td>
-</tr>
-<tr>
-  <th>unit_R122</th> <td> 5.292e+13</td> <td> 3.22e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.77e+14  6.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R123</th> <td> 5.277e+13</td> <td> 3.21e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.76e+14  6.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R124</th> <td> 5.144e+13</td> <td> 3.13e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.61e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R126</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R127</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R137</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R139</th> <td>  5.35e+13</td> <td> 3.25e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.84e+14  6.91e+14</td>
-</tr>
-<tr>
-  <th>unit_R163</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R172</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R179</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R181</th> <td> 5.262e+13</td> <td>  3.2e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.74e+14  6.79e+14</td>
-</tr>
-<tr>
-  <th>unit_R183</th> <td> 5.069e+13</td> <td> 3.08e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.53e+14  6.54e+14</td>
-</tr>
-<tr>
-  <th>unit_R184</th> <td> 5.129e+13</td> <td> 3.12e+14</td> <td>    0.165</td> <td> 0.869</td> <td> -5.6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R186</th> <td> 5.292e+13</td> <td> 3.22e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.77e+14  6.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R188</th> <td>  5.35e+13</td> <td> 3.25e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.84e+14  6.91e+14</td>
-</tr>
-<tr>
-  <th>unit_R189</th> <td> 5.233e+13</td> <td> 3.18e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.71e+14  6.76e+14</td>
-</tr>
-<tr>
-  <th>unit_R194</th> <td> 5.262e+13</td> <td>  3.2e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.74e+14  6.79e+14</td>
-</tr>
-<tr>
-  <th>unit_R196</th> <td> 5.321e+13</td> <td> 3.23e+14</td> <td>    0.165</td> <td> 0.869</td> <td> -5.8e+14  6.87e+14</td>
-</tr>
-<tr>
-  <th>unit_R198</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R199</th> <td> 5.262e+13</td> <td>  3.2e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.74e+14  6.79e+14</td>
-</tr>
-<tr>
-  <th>unit_R200</th> <td> 5.306e+13</td> <td> 3.22e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.79e+14  6.85e+14</td>
-</tr>
-<tr>
-  <th>unit_R202</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R203</th> <td> 5.204e+13</td> <td> 3.16e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.68e+14  6.72e+14</td>
-</tr>
-<tr>
-  <th>unit_R204</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R205</th> <td> 5.306e+13</td> <td> 3.22e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.79e+14  6.85e+14</td>
-</tr>
-<tr>
-  <th>unit_R207</th> <td>  5.35e+13</td> <td> 3.25e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.84e+14  6.91e+14</td>
-</tr>
-<tr>
-  <th>unit_R208</th> <td> 5.306e+13</td> <td> 3.22e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.79e+14  6.85e+14</td>
-</tr>
-<tr>
-  <th>unit_R209</th> <td> 5.099e+13</td> <td>  3.1e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.56e+14  6.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R210</th> <td> 5.233e+13</td> <td> 3.18e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.71e+14  6.76e+14</td>
-</tr>
-<tr>
-  <th>unit_R211</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R212</th> <td>  5.35e+13</td> <td> 3.25e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.84e+14  6.91e+14</td>
-</tr>
-<tr>
-  <th>unit_R213</th> <td> 5.248e+13</td> <td> 3.19e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.72e+14  6.77e+14</td>
-</tr>
-<tr>
-  <th>unit_R214</th> <td> 5.084e+13</td> <td> 3.09e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.55e+14  6.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R215</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R216</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R217</th> <td> 5.099e+13</td> <td>  3.1e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.56e+14  6.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R218</th> <td>  5.35e+13</td> <td> 3.25e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.84e+14  6.91e+14</td>
-</tr>
-<tr>
-  <th>unit_R219</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R220</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R221</th> <td> 5.084e+13</td> <td> 3.09e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.55e+14  6.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R223</th> <td>  5.35e+13</td> <td> 3.25e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.84e+14  6.91e+14</td>
-</tr>
-<tr>
-  <th>unit_R224</th> <td> 5.218e+13</td> <td> 3.17e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.69e+14  6.74e+14</td>
-</tr>
-<tr>
-  <th>unit_R225</th> <td> 5.292e+13</td> <td> 3.22e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.77e+14  6.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R226</th> <td> 5.129e+13</td> <td> 3.12e+14</td> <td>    0.165</td> <td> 0.869</td> <td> -5.6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R227</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R228</th> <td> 5.114e+13</td> <td> 3.11e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.58e+14   6.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R229</th> <td> 5.144e+13</td> <td> 3.13e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.61e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R230</th> <td> 5.204e+13</td> <td> 3.16e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.68e+14  6.72e+14</td>
-</tr>
-<tr>
-  <th>unit_R231</th> <td> 5.292e+13</td> <td> 3.22e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.77e+14  6.83e+14</td>
-</tr>
-<tr>
-  <th>unit_R232</th> <td> 5.159e+13</td> <td> 3.13e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.63e+14  6.66e+14</td>
-</tr>
-<tr>
-  <th>unit_R233</th> <td> 5.053e+13</td> <td> 3.07e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.51e+14  6.52e+14</td>
-</tr>
-<tr>
-  <th>unit_R234</th> <td> 5.099e+13</td> <td>  3.1e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.56e+14  6.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R235</th> <td>  5.35e+13</td> <td> 3.25e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.84e+14  6.91e+14</td>
-</tr>
-<tr>
-  <th>unit_R236</th> <td> 5.306e+13</td> <td> 3.22e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.79e+14  6.85e+14</td>
-</tr>
-<tr>
-  <th>unit_R237</th> <td> 5.114e+13</td> <td> 3.11e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.58e+14   6.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R238</th> <td>  5.35e+13</td> <td> 3.25e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.84e+14  6.91e+14</td>
-</tr>
-<tr>
-  <th>unit_R239</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R240</th> <td> 5.321e+13</td> <td> 3.23e+14</td> <td>    0.165</td> <td> 0.869</td> <td> -5.8e+14  6.87e+14</td>
-</tr>
-<tr>
-  <th>unit_R242</th> <td> 5.248e+13</td> <td> 3.19e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.72e+14  6.77e+14</td>
-</tr>
-<tr>
-  <th>unit_R243</th> <td> 5.174e+13</td> <td> 3.14e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.64e+14  6.68e+14</td>
-</tr>
-<tr>
-  <th>unit_R244</th> <td> 5.174e+13</td> <td> 3.14e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.64e+14  6.68e+14</td>
-</tr>
-<tr>
-  <th>unit_R246</th> <td> 5.114e+13</td> <td> 3.11e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.58e+14   6.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R247</th> <td> 5.023e+13</td> <td> 3.05e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.48e+14  6.48e+14</td>
-</tr>
-<tr>
-  <th>unit_R248</th> <td>  5.35e+13</td> <td> 3.25e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.84e+14  6.91e+14</td>
-</tr>
-<tr>
-  <th>unit_R249</th> <td> 5.277e+13</td> <td> 3.21e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.76e+14  6.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R250</th> <td> 5.248e+13</td> <td> 3.19e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.72e+14  6.77e+14</td>
-</tr>
-<tr>
-  <th>unit_R251</th> <td> 5.321e+13</td> <td> 3.23e+14</td> <td>    0.165</td> <td> 0.869</td> <td> -5.8e+14  6.87e+14</td>
-</tr>
-<tr>
-  <th>unit_R252</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R253</th> <td> 5.159e+13</td> <td> 3.13e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.63e+14  6.66e+14</td>
-</tr>
-<tr>
-  <th>unit_R254</th> <td>  5.35e+13</td> <td> 3.25e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.84e+14  6.91e+14</td>
-</tr>
-<tr>
-  <th>unit_R255</th> <td> 5.306e+13</td> <td> 3.22e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.79e+14  6.85e+14</td>
-</tr>
-<tr>
-  <th>unit_R256</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R257</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R258</th> <td> 5.321e+13</td> <td> 3.23e+14</td> <td>    0.165</td> <td> 0.869</td> <td> -5.8e+14  6.87e+14</td>
-</tr>
-<tr>
-  <th>unit_R259</th> <td> 5.277e+13</td> <td> 3.21e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.76e+14  6.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R260</th> <td> 4.914e+13</td> <td> 2.99e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.36e+14  6.34e+14</td>
-</tr>
-<tr>
-  <th>unit_R261</th> <td> 5.233e+13</td> <td> 3.18e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.71e+14  6.76e+14</td>
-</tr>
-<tr>
-  <th>unit_R262</th> <td> 5.023e+13</td> <td> 3.05e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.48e+14  6.48e+14</td>
-</tr>
-<tr>
-  <th>unit_R263</th> <td> 5.248e+13</td> <td> 3.19e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.72e+14  6.77e+14</td>
-</tr>
-<tr>
-  <th>unit_R264</th> <td>  5.35e+13</td> <td> 3.25e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.84e+14  6.91e+14</td>
-</tr>
-<tr>
-  <th>unit_R265</th> <td> 5.144e+13</td> <td> 3.13e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.61e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R266</th> <td>  5.35e+13</td> <td> 3.25e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.84e+14  6.91e+14</td>
-</tr>
-<tr>
-  <th>unit_R269</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R270</th> <td> 5.114e+13</td> <td> 3.11e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.58e+14   6.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R271</th> <td> 5.129e+13</td> <td> 3.12e+14</td> <td>    0.165</td> <td> 0.869</td> <td> -5.6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R273</th> <td> 5.099e+13</td> <td>  3.1e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.56e+14  6.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R274</th> <td> 5.159e+13</td> <td> 3.13e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.63e+14  6.66e+14</td>
-</tr>
-<tr>
-  <th>unit_R275</th> <td> 5.233e+13</td> <td> 3.18e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.71e+14  6.76e+14</td>
-</tr>
-<tr>
-  <th>unit_R276</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R277</th> <td> 4.976e+13</td> <td> 3.02e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.43e+14  6.42e+14</td>
-</tr>
-<tr>
-  <th>unit_R278</th> <td> 5.144e+13</td> <td> 3.13e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.61e+14  6.64e+14</td>
-</tr>
-<tr>
-  <th>unit_R279</th> <td> 5.262e+13</td> <td>  3.2e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.74e+14  6.79e+14</td>
-</tr>
-<tr>
-  <th>unit_R280</th> <td> 5.007e+13</td> <td> 3.04e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.46e+14  6.46e+14</td>
-</tr>
-<tr>
-  <th>unit_R281</th> <td> 5.277e+13</td> <td> 3.21e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.76e+14  6.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R282</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R284</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R285</th> <td> 5.084e+13</td> <td> 3.09e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.55e+14  6.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R287</th> <td> 5.069e+13</td> <td> 3.08e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.53e+14  6.54e+14</td>
-</tr>
-<tr>
-  <th>unit_R291</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R294</th> <td> 5.233e+13</td> <td> 3.18e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.71e+14  6.76e+14</td>
-</tr>
-<tr>
-  <th>unit_R295</th> <td> 4.623e+13</td> <td> 2.81e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.04e+14  5.97e+14</td>
-</tr>
-<tr>
-  <th>unit_R300</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R303</th> <td> 5.277e+13</td> <td> 3.21e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.76e+14  6.81e+14</td>
-</tr>
-<tr>
-  <th>unit_R304</th> <td> 5.335e+13</td> <td> 3.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.82e+14  6.89e+14</td>
-</tr>
-<tr>
-  <th>unit_R307</th> <td> 5.069e+13</td> <td> 3.08e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.53e+14  6.54e+14</td>
-</tr>
-<tr>
-  <th>unit_R308</th> <td> 5.174e+13</td> <td> 3.14e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.64e+14  6.68e+14</td>
-</tr>
-<tr>
-  <th>unit_R309</th> <td> 5.189e+13</td> <td> 3.15e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.66e+14   6.7e+14</td>
-</tr>
-<tr>
-  <th>unit_R310</th> <td> 5.129e+13</td> <td> 3.12e+14</td> <td>    0.165</td> <td> 0.869</td> <td> -5.6e+14  6.62e+14</td>
-</tr>
-<tr>
-  <th>unit_R311</th> <td> 5.204e+13</td> <td> 3.16e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.68e+14  6.72e+14</td>
-</tr>
-<tr>
-  <th>unit_R312</th> <td> 5.321e+13</td> <td> 3.23e+14</td> <td>    0.165</td> <td> 0.869</td> <td> -5.8e+14  6.87e+14</td>
-</tr>
-<tr>
-  <th>unit_R313</th> <td> 5.053e+13</td> <td> 3.07e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.51e+14  6.52e+14</td>
-</tr>
-<tr>
-  <th>unit_R318</th> <td> 5.306e+13</td> <td> 3.22e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.79e+14  6.85e+14</td>
-</tr>
-<tr>
-  <th>unit_R319</th> <td> 5.262e+13</td> <td>  3.2e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.74e+14  6.79e+14</td>
-</tr>
-<tr>
-  <th>unit_R321</th> <td> 5.364e+13</td> <td> 3.26e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.85e+14  6.92e+14</td>
-</tr>
-<tr>
-  <th>unit_R322</th> <td> 5.262e+13</td> <td>  3.2e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.74e+14  6.79e+14</td>
-</tr>
-<tr>
-  <th>unit_R323</th> <td> 5.159e+13</td> <td> 3.13e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.63e+14  6.66e+14</td>
-</tr>
-<tr>
-  <th>unit_R325</th> <td> 5.204e+13</td> <td> 3.16e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.68e+14  6.72e+14</td>
-</tr>
-<tr>
-  <th>unit_R330</th> <td> 5.233e+13</td> <td> 3.18e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.71e+14  6.76e+14</td>
-</tr>
-<tr>
-  <th>unit_R335</th> <td> 5.038e+13</td> <td> 3.06e+14</td> <td>    0.165</td> <td> 0.869</td> <td> -5.5e+14   6.5e+14</td>
-</tr>
-<tr>
-  <th>unit_R336</th> <td> 5.038e+13</td> <td> 3.06e+14</td> <td>    0.165</td> <td> 0.869</td> <td> -5.5e+14   6.5e+14</td>
-</tr>
-<tr>
-  <th>unit_R337</th> <td> 5.099e+13</td> <td>  3.1e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.56e+14  6.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R338</th> <td> 5.189e+13</td> <td> 3.15e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.66e+14   6.7e+14</td>
-</tr>
-<tr>
-  <th>unit_R341</th> <td> 5.321e+13</td> <td> 3.23e+14</td> <td>    0.165</td> <td> 0.869</td> <td> -5.8e+14  6.87e+14</td>
-</tr>
-<tr>
-  <th>unit_R344</th> <td> 5.038e+13</td> <td> 3.06e+14</td> <td>    0.165</td> <td> 0.869</td> <td> -5.5e+14   6.5e+14</td>
-</tr>
-<tr>
-  <th>unit_R345</th> <td> 5.204e+13</td> <td> 3.16e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.68e+14  6.72e+14</td>
-</tr>
-<tr>
-  <th>unit_R346</th> <td> 5.189e+13</td> <td> 3.15e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.66e+14   6.7e+14</td>
-</tr>
-<tr>
-  <th>unit_R348</th> <td> 5.189e+13</td> <td> 3.15e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.66e+14   6.7e+14</td>
-</tr>
-<tr>
-  <th>unit_R354</th> <td> 5.084e+13</td> <td> 3.09e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.55e+14  6.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R356</th> <td> 5.218e+13</td> <td> 3.17e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.69e+14  6.74e+14</td>
-</tr>
-<tr>
-  <th>unit_R358</th> <td> 5.084e+13</td> <td> 3.09e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.55e+14  6.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R370</th> <td> 5.218e+13</td> <td> 3.17e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.69e+14  6.74e+14</td>
-</tr>
-<tr>
-  <th>unit_R371</th> <td> 5.159e+13</td> <td> 3.13e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.63e+14  6.66e+14</td>
-</tr>
-<tr>
-  <th>unit_R372</th> <td> 5.114e+13</td> <td> 3.11e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.58e+14   6.6e+14</td>
-</tr>
-<tr>
-  <th>unit_R373</th> <td> 5.099e+13</td> <td>  3.1e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.56e+14  6.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R382</th> <td> 5.233e+13</td> <td> 3.18e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.71e+14  6.76e+14</td>
-</tr>
-<tr>
-  <th>unit_R424</th> <td> 5.053e+13</td> <td> 3.07e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.51e+14  6.52e+14</td>
-</tr>
-<tr>
-  <th>unit_R429</th> <td> 5.321e+13</td> <td> 3.23e+14</td> <td>    0.165</td> <td> 0.869</td> <td> -5.8e+14  6.87e+14</td>
-</tr>
-<tr>
-  <th>unit_R453</th> <td> 5.007e+13</td> <td> 3.04e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.46e+14  6.46e+14</td>
-</tr>
-<tr>
-  <th>unit_R454</th> <td> 5.084e+13</td> <td> 3.09e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.55e+14  6.56e+14</td>
-</tr>
-<tr>
-  <th>unit_R455</th> <td> 5.099e+13</td> <td>  3.1e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.56e+14  6.58e+14</td>
-</tr>
-<tr>
-  <th>unit_R456</th> <td> 5.233e+13</td> <td> 3.18e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.71e+14  6.76e+14</td>
-</tr>
-<tr>
-  <th>unit_R459</th> <td> 3.694e+13</td> <td> 2.24e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-4.03e+14  4.77e+14</td>
-</tr>
-<tr>
-  <th>unit_R464</th> <td> 5.114e+13</td> <td> 3.11e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.58e+14   6.6e+14</td>
-</tr>
-<tr>
-  <th>conds_0</th>   <td>-2.683e+11</td> <td> 1.63e+12</td> <td>   -0.165</td> <td> 0.869</td> <td>-3.46e+12  2.93e+12</td>
-</tr>
-<tr>
-  <th>conds_1</th>   <td>-1.279e+11</td> <td> 7.77e+11</td> <td>   -0.165</td> <td> 0.869</td> <td>-1.65e+12   1.4e+12</td>
-</tr>
-<tr>
-  <th>conds_2</th>   <td>-2.068e+11</td> <td> 1.26e+12</td> <td>   -0.165</td> <td> 0.869</td> <td>-2.67e+12  2.26e+12</td>
-</tr>
-<tr>
-  <th>conds_3</th>   <td>-2.588e+11</td> <td> 1.57e+12</td> <td>   -0.165</td> <td> 0.869</td> <td>-3.34e+12  2.82e+12</td>
-</tr>
-<tr>
-  <th>conds_4</th>   <td>-1.182e+11</td> <td> 7.18e+11</td> <td>   -0.165</td> <td> 0.869</td> <td>-1.53e+12  1.29e+12</td>
-</tr>
-<tr>
-  <th>conds_5</th>   <td>-1.578e+11</td> <td> 9.59e+11</td> <td>   -0.165</td> <td> 0.869</td> <td>-2.04e+12  1.72e+12</td>
-</tr>
-<tr>
-  <th>conds_6</th>   <td>-8.546e+10</td> <td> 5.19e+11</td> <td>   -0.165</td> <td> 0.869</td> <td> -1.1e+12  9.32e+11</td>
-</tr>
-<tr>
-  <th>conds_7</th>   <td>-5.083e+10</td> <td> 3.09e+11</td> <td>   -0.165</td> <td> 0.869</td> <td>-6.56e+11  5.55e+11</td>
-</tr>
-<tr>
-  <th>conds_8</th>   <td>-1.006e+11</td> <td> 6.11e+11</td> <td>   -0.165</td> <td> 0.869</td> <td> -1.3e+12   1.1e+12</td>
-</tr>
-<tr>
-  <th>conds_9</th>   <td>-4.716e+10</td> <td> 2.87e+11</td> <td>   -0.165</td> <td> 0.869</td> <td>-6.09e+11  5.14e+11</td>
-</tr>
-<tr>
-  <th>conds_10</th>  <td> -1.91e+10</td> <td> 1.16e+11</td> <td>   -0.165</td> <td> 0.869</td> <td>-2.47e+11  2.08e+11</td>
-</tr>
-<tr>
-  <th>conds_11</th>  <td>-1.366e+10</td> <td>  8.3e+10</td> <td>   -0.165</td> <td> 0.869</td> <td>-1.76e+11  1.49e+11</td>
-</tr>
-<tr>
-  <th>ones</th>      <td> 1886.5565</td> <td>   10.273</td> <td>  183.643</td> <td> 0.000</td> <td> 1866.421  1906.692</td>
+  <th>rain</th>      <td> 5.099e+13</td> <td>  3.1e+14</td> <td>    0.165</td> <td> 0.869</td> <td>-5.56e+14  6.58e+14</td>
 </tr>
 </table>
 <table class="simpletable">
@@ -8193,7 +5228,7 @@ qHW9vFcAAAAASUVORK5CYII=
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h6 id="Another-visualization-of-ENTRIESn_hourly-based-on-weekday-and-weekend">Another visualization of ENTRIESn_hourly based on weekday and weekend<a class="anchor-link" href="#Another-visualization-of-ENTRIESn_hourly-based-on-weekday-and-weekend">&#182;</a></h6>
+<h6 id="Another-visualization-of-ENTRIESn_hourly-based-on-weekday-and-weekend-">Another visualization of ENTRIESn_hourly based on weekday and weekend <a id="fig6" /><a class="anchor-link" href="#Another-visualization-of-ENTRIESn_hourly-based-on-weekday-and-weekend-">&#182;</a></h6>
 </div>
 </div>
 </div>
@@ -8947,14 +5982,130 @@ SZIKYxIgSZIkFcYkQJIkSSrMf4oJv+JwnXAsAAAAAElFTkSuQmCC
 <li><p>the real ridership cannot be simply predicted by a linear function. In fact, Section 2. proved that the OLS model with the current features was not doing a good job. The real world is far more complicated, and there may be many other factors or interactions that I need to consider. For example, there may be an interaction among features (e.g. the ridership of rain in the morning and clear in the night might exhibit a different pattern from that of rain all day, <span class="math">\(etc.\)</span>). In short, simple features with a linear regression can only capture the tip of iceburg, and better predictions require more sophisticated modeling and feature selections.</p></li>
 <li><p>I have only analyzed one-month-worth data. If I were to make the subway usage more predictable, I will consider seasonal effects (e.g. summer is a sightseeing season, thus the ridership may significantly differ from other seasons, <span class="math">\(etc.\)</span>) and the history of subway usage (e.g. is the ridership an increasing trend, <span class="math">\(etc.\)</span>). Long story in short, I will analyze data for a longer period so that other factors may become apparent.</p></li>
 </ol>
+<p>(problem 5.2) To improve the prediction, I realize that the dependency of <em>ENTRIESn_hourly</em> to <em>hour</em> is somewhat quadratic or cubic (see <a href="#fig6">Figure 6</a>). So I introduced <em>hour</em><span class="math">\(^2\)</span> and <em>hour</em><span class="math">\(^3\)</span> in addition to <a href="#features">the improved features set</a>.</p>
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="c">#new feature sets</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">d</span><span class="p">[[</span><span class="s">&#39;day_week&#39;</span><span class="p">,</span> <span class="s">&#39;hour&#39;</span><span class="p">,</span> <span class="s">&#39;meantempi&#39;</span><span class="p">,</span><span class="s">&#39;weekday&#39;</span><span class="p">]]</span>  
+<span class="n">dummy_units1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s">&#39;UNIT&#39;</span><span class="p">],</span> <span class="n">prefix</span><span class="o">=</span><span class="s">&#39;unit&#39;</span><span class="p">)</span>
+<span class="n">dummy_units2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s">&#39;conds&#39;</span><span class="p">],</span> <span class="n">prefix</span><span class="o">=</span><span class="s">&#39;conds&#39;</span><span class="p">)</span>
+<span class="n">features</span><span class="p">[</span><span class="s">&#39;hour2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;hour&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">features</span><span class="p">[</span><span class="s">&#39;hour3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;hour&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">3</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">features</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dummy_units1</span><span class="p">)</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">features</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dummy_units2</span><span class="p">)</span>
+<span class="n">features</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="n">normalize_features</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+<span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">features</span><span class="p">[</span><span class="s">&#39;intercept&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="c"># Add a column of constant (y intercept)</span>
+
+<span class="c"># fit</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">features</span><span class="p">,)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">improved_features</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;day_week&#39;</span><span class="p">,</span> <span class="s">&#39;hour&#39;</span><span class="p">,</span> <span class="s">&#39;hour2&#39;</span><span class="p">,</span> <span class="s">&#39;hour3&#39;</span><span class="p">,</span><span class="s">&#39;meantempi&#39;</span><span class="p">,</span><span class="s">&#39;weekday&#39;</span><span class="p">,</span><span class="s">&#39;intercept&#39;</span><span class="p">]</span>
+<span class="n">results</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">xname</span> <span class="o">=</span> <span class="n">improved_features</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[13]:</div>
+
+<div class="output_html rendered_html output_subarea output_pyout">
+<table class="simpletable">
+<caption>OLS Regression Results</caption>
+<tr>
+  <th>Dep. Variable:</th>            <td>y</td>        <th>  R-squared:         </th>  <td>   0.514</td>  
+</tr>
+<tr>
+  <th>Model:</th>                   <td>OLS</td>       <th>  Adj. R-squared:    </th>  <td>   0.512</td>  
+</tr>
+<tr>
+  <th>Method:</th>             <td>Least Squares</td>  <th>  F-statistic:       </th>  <td>   175.5</td>  
+</tr>
+<tr>
+  <th>Date:</th>             <td>Sat, 14 Feb 2015</td> <th>  Prob (F-statistic):</th>   <td>  0.00</td>   
+</tr>
+<tr>
+  <th>Time:</th>                 <td>22:53:16</td>     <th>  Log-Likelihood:    </th> <td>-3.8589e+05</td>
+</tr>
+<tr>
+  <th>No. Observations:</th>      <td> 42649</td>      <th>  AIC:               </th>  <td>7.723e+05</td> 
+</tr>
+<tr>
+  <th>Df Residuals:</th>          <td> 42392</td>      <th>  BIC:               </th>  <td>7.745e+05</td> 
+</tr>
+<tr>
+  <th>Df Model:</th>              <td>   256</td>      <th>                     </th>      <td> </td>     
+</tr>
+<tr>
+  <th>Covariance Type:</th>      <td>nonrobust</td>    <th>                     </th>      <td> </td>     
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+      <td></td>         <th>coef</th>     <th>std err</th>      <th>t</th>      <th>P>|t|</th> <th>[95.0% Conf. Int.]</th> 
+</tr>
+<tr>
+  <th>day_week</th>  <td>  124.1080</td> <td>   17.766</td> <td>    6.986</td> <td> 0.000</td> <td>   89.285   158.931</td>
+</tr>
+<tr>
+  <th>hour</th>      <td>-3122.2019</td> <td>   82.651</td> <td>  -37.776</td> <td> 0.000</td> <td>-3284.200 -2960.204</td>
+</tr>
+<tr>
+  <th>hour2</th>     <td> -117.3751</td> <td>   11.766</td> <td>   -9.975</td> <td> 0.000</td> <td> -140.437   -94.313</td>
+</tr>
+<tr>
+  <th>hour3</th>     <td>  533.1647</td> <td>   17.529</td> <td>   30.416</td> <td> 0.000</td> <td>  498.808   567.522</td>
+</tr>
+<tr>
+  <th>meantempi</th> <td> 9714.5396</td> <td>  212.346</td> <td>   45.749</td> <td> 0.000</td> <td> 9298.337  1.01e+04</td>
+</tr>
+<tr>
+  <th>weekday</th>   <td>-5898.6049</td> <td>  139.650</td> <td>  -42.238</td> <td> 0.000</td> <td>-6172.322 -5624.888</td>
+</tr>
+<tr>
+  <th>intercept</th> <td>-1.931e+14</td> <td> 2.87e+14</td> <td>   -0.672</td> <td> 0.501</td> <td>-7.56e+14   3.7e+14</td>
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+  <th>Omnibus:</th>       <td>30025.453</td> <th>  Durbin-Watson:     </th>  <td>   1.612</td>  
+</tr>
+<tr>
+  <th>Prob(Omnibus):</th>  <td> 0.000</td>   <th>  Jarque-Bera (JB):  </th> <td>1013129.327</td>
+</tr>
+<tr>
+  <th>Skew:</th>           <td> 2.974</td>   <th>  Prob(JB):          </th>  <td>    0.00</td>  
+</tr>
+<tr>
+  <th>Kurtosis:</th>       <td>26.124</td>   <th>  Cond. No.          </th>  <td>1.16e+15</td>  
+</tr>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>Now, I observe a quite improvement. Thus, as I mentioned earlier, many other factors (interaction with a feature itself, interactions among features, and <span class="math">\(etc.\)</span>) exist to influence the ridership. Thus, more sophisticated analysis is required if I need to predict it with higher accuracy.</p>
+<p>Lastly, I want to briefly share my thoughts for why rain or wind conditions did not show the significant association with the ridership as opposed to my initial thought. I think that because the NYC subway is so essential for people living there that they will use the subway regardless of rain or weather. Furthermore, I know the traffic jam can be sometimes very significant in NYC, again, people like to take the subway anyway. That is why weather information in general is not useful to infer the ridership compared with time.</p>
 <p>For now, this is the end of my analysis. Thank you so much for reading this, and I hope you enjoyed this.</p>
 </div>
 </div>
